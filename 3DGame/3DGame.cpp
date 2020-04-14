@@ -10,7 +10,7 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-//tis is a testttttttttttttttttttt
+//hi there
 
 uint32_t pack_color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a = 255) {
     return (a << 24) + (b << 16) + (g << 8) + r; // 10111111 10111111 10111111 10111111
