@@ -62,6 +62,8 @@ bool load_texture(const std::string filename, std::vector<uint32_t>& texture, si
 
     text_cnt = w / h;
     text_size = w / text_cnt;
+    //std::cout << w << " " << h << std::endl;
+
     if (w != h * int(text_cnt)) {
         std::cerr << "Error: the texture file must contain N square textures packed horizontally" << std::endl;
         stbi_image_free(pixmap);
@@ -82,6 +84,19 @@ bool load_texture(const std::string filename, std::vector<uint32_t>& texture, si
     return true;
 }
 
+std::vector<uint32_t> texture_column(const std::vector<uint32_t>& img, const size_t texsize, const size_t ntextures, const size_t texid, const size_t texcoord, const size_t column_height) {
+    const size_t img_w = texsize * ntextures;
+    const size_t img_h = texsize;
+    assert(img.size() == img_w * img_h && texcoord < texsize&& texid < ntextures);
+    std::vector<uint32_t> column(column_height);
+    for (size_t y = 0; y < column_height; y++) {
+        size_t pix_x = texid * texsize + texcoord;
+        size_t pix_y = (y * texsize) / column_height;
+        column[y] = img[pix_x + pix_y * img_w];
+    }
+    return column;
+}
+
 int main() {
     const size_t win_w = 1024; // image width
     const size_t win_h = 512; // image height
@@ -96,9 +111,9 @@ int main() {
                        "0     0  1110000"\
                        "0     3        0"\
                        "0   10000      0"\
-                       "0   0   11100  0"\
-                       "0   0   0      0"\
-                       "0   0   1  00000"\
+                       "0   3   11100  0"\
+                       "5   4   0      0"\
+                       "5   4   1  00000"\
                        "0       1      0"\
                        "2       1      0"\
                        "0       0      0"\
@@ -116,12 +131,6 @@ int main() {
     float player_a = 1.523; // player view direction
     const float fov = M_PI / 3.; // field of view
 
-    const size_t ncolors = 10;
-    std::vector<uint32_t> colors(ncolors);
-    for (size_t i = 0; i < ncolors; i++) {
-        colors[i] = pack_color(rand() % 255, rand() % 255, rand() % 255);
-    }
-
     std::vector<uint32_t> walltext; // textures for the walls
     size_t walltext_size;  // texture dimensions (it is a square)
     size_t walltext_cnt;   // number of different textures in the image
@@ -138,9 +147,10 @@ int main() {
             if (map[i + j * map_w] == ' ') continue; // skip empty spaces
             size_t rect_x = i * rect_w;
             size_t rect_y = j * rect_h;
-            size_t icolor = map[i + j * map_w] - '0';
-            assert(icolor < ncolors);
-            draw_rectangle(framebuffer, win_w, win_h, rect_x, rect_y, rect_w, rect_h, colors[icolor]);
+            size_t texid = map[i + j * map_w] - '0';
+            assert(texid < walltext_cnt);
+            draw_rectangle(framebuffer, win_w, win_h, rect_x, rect_y, rect_w, rect_h, walltext[texid * walltext_size]); // the color is taken from the upper left pixel of the texture #texid
+
         }
     }
 
@@ -150,24 +160,33 @@ int main() {
             float cx = player_x + t*cos(angle);
             float cy = player_y + t*sin(angle);
 
-            size_t pix_x = cx*rect_w;
-            size_t pix_y = cy*rect_h;
+            int pix_x = cx*rect_w;
+            int pix_y = cy*rect_h;
             framebuffer[pix_x + pix_y*win_w] = pack_color(160, 160, 160); // this draws the visibility cone
 
             if (map[int(cx)+int(cy)*map_w]!=' ') { // our ray touches a wall, so draw the vertical column to create an illusion of 3D
-                size_t icolor = map[int(cx)+int(cy)*map_w] - '0';
-                assert(icolor<ncolors);
+                size_t texid = map[int(cx)+int(cy)*map_w] - '0';
+                assert(texid < walltext_cnt);
                 size_t column_height = win_h/(t*cos(angle-player_a));
-                draw_rectangle(framebuffer, win_w, win_h, win_w/2+i, win_h/2-column_height/2, 1, column_height, colors[icolor]);
+
+                float hitx = cx - floor(cx + .5); // hitx and hity contain (signed) fractional parts of cx and cy,
+                float hity = cy - floor(cy + .5); // they vary between -0.5 and +0.5, and one of them is supposed to be very close to 0
+                int x_texcoord = hitx * walltext_size;
+                if (std::abs(hity) > std::abs(hitx)) { // we need to determine whether we hit a "vertical" or a "horizontal" wall (w.r.t the map)
+                    x_texcoord = hity * walltext_size;
+                }
+                if (x_texcoord < 0) x_texcoord += walltext_size; // do not forget x_texcoord can be negative, fix that
+                assert(x_texcoord >= 0 && x_texcoord < (int)walltext_size);
+
+                std::vector<uint32_t> column = texture_column(walltext, walltext_size, walltext_cnt, texid, x_texcoord, column_height);
+                pix_x = win_w / 2 + i; //to start in the second part of the whole frame
+                for (size_t j = 0; j < column_height; j++) {
+                    pix_y = j + win_h / 2 - column_height / 2;
+                    if (pix_y < 0 || pix_y >= (int)win_h) continue;
+                    framebuffer[pix_x + pix_y * win_w] = column[j];
+                }
                 break;
             }
-        }
-    }
-
-    const size_t texid = 4; // draw the 4th texture on the screen
-    for (size_t i = 0; i < walltext_size; i++) {
-        for (size_t j = 0; j < walltext_size; j++) {
-            framebuffer[i + j * win_w] = walltext[i + texid * walltext_size + j * walltext_size * walltext_cnt];
         }
     }
 
