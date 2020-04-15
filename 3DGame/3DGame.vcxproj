@@ -96,7 +96,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\george\Documents\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -151,22 +151,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gui.cpp" />
-    <ClCompile Include="tinyraycaster.cpp" />
-    <ClCompile Include="framebuffer.cpp" />
-    <ClCompile Include="map.cpp" />
-    <ClCompile Include="sprite.cpp" />
-    <ClCompile Include="textures.cpp" />
-    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\button.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\leaderboard.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\main.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\menu.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\player.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\renderer.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sound.cpp" />
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framebuffer.h" />
-    <ClInclude Include="map.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="tinyraycaster.h" />
-    <ClInclude Include="sprite.h" />
-    <ClInclude Include="textures.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\button.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\leaderboard.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\menu.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\player.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\renderer.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sound.h" />
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\timer.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="3DGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.bmp" />
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\screenshot.png" />
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sprites.bmp" />
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\walltext.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\pixelz.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

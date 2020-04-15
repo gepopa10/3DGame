@@ -15,49 +15,90 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="framebuffer.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="map.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\leaderboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textures.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utils.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sprite.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tinyraycaster.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gui.cpp">
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framebuffer.h">
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\button.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="map.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\leaderboard.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="player.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="textures.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\menu.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\player.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="sprite.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\renderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="tinyraycaster.h">
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sound.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\timer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="3DGame.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\map.bmp">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\screenshot.png">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\sprites.bmp">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\walltext.bmp">
+      <Filter>Source Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\pixelz.ttf">
+      <Filter>Source Files</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\Downloads\thanksgiving-party-master\thanksgiving-party-master\README.md">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
