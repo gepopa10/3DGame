@@ -148,6 +148,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="3DGame.cpp" />
+    <ClCompile Include="framebuffer.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="textures.cpp" />
+    <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framebuffer.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="sprite.h" />
+    <ClInclude Include="textures.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
