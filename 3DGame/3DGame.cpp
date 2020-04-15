@@ -14,6 +14,7 @@
 #include "sprite.h"
 #include "framebuffer.h"
 #include "textures.h"
+#include "SDL.h"
 
 int wall_x_texcoord(const float hitx, const float hity, Texture& tex_walls) {
     float x = hitx - floor(hitx + .5); // x and y contain (signed) fractional parts of hitx and hity,
