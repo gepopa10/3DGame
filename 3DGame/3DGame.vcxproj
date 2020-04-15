@@ -95,8 +95,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\george\Documents\SDL2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\george\Documents\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,7 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="3DGame.cpp" />
+    <ClCompile Include="gui.cpp" />
+    <ClCompile Include="tinyraycaster.cpp" />
     <ClCompile Include="framebuffer.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -161,6 +163,7 @@
     <ClInclude Include="framebuffer.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="tinyraycaster.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="textures.h" />
     <ClInclude Include="utils.h" />
