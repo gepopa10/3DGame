@@ -50,7 +50,7 @@ int main() {
             auto t2 = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double, std::milli> fp_ms = t2 - t1;
             if (fp_ms.count()<20) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(3));
+                std::this_thread::sleep_for(std::chrono::milliseconds(2));
                 continue;
             }
             t1 = t2;
@@ -60,11 +60,11 @@ int main() {
             SDL_Event event;
             if (SDL_PollEvent(&event)) {
                 if (SDL_QUIT==event.type || (SDL_KEYDOWN==event.type && SDLK_ESCAPE==event.key.keysym.sym)) break;
-                if (SDL_KEYUP==event.type) {
+                if (SDL_KEYUP==event.type) { //SDL_KEYUP when user releases button
                     if ('a'==event.key.keysym.sym || 'd'==event.key.keysym.sym) gs.player.turn = 0;
                     if ('w'==event.key.keysym.sym || 's'==event.key.keysym.sym) gs.player.walk = 0;
                 }
-                if (SDL_KEYDOWN==event.type) {
+                if (SDL_KEYDOWN==event.type) { //SDL_KEYDOWN when user presses
                     if ('a'==event.key.keysym.sym) gs.player.turn = -1;
                     if ('d'==event.key.keysym.sym) gs.player.turn =  1;
                     if ('w'==event.key.keysym.sym) gs.player.walk =  1;
@@ -78,13 +78,27 @@ int main() {
             float nx = gs.player.x + gs.player.walk*cos(gs.player.a)*.05;
             float ny = gs.player.y + gs.player.walk*sin(gs.player.a)*.05;
 
+            //check if the map is empty at the new position before updating
             if (int(nx)>=0 && int(nx)<int(gs.map.w) && int(ny)>=0 && int(ny)<int(gs.map.h)) {
                 if (gs.map.is_empty(nx, gs.player.y)) gs.player.x = nx;
                 if (gs.map.is_empty(gs.player.x, ny)) gs.player.y = ny;
             }
-            for (size_t i=0; i<gs.monsters.size(); i++) { // update the distances from the player to each sprite
-                gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
+
+            for (size_t i=0; i<gs.monsters.size(); i++) { // make the monsters advance in the players direction
+              gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
+              float sprite_dir = atan2(gs.monsters[i].y - gs.player.y, gs.monsters[i].x - gs.player.x);
+              float nx_sprite = gs.monsters[i].x - gs.monsters[i].player_dist*cos(sprite_dir)*.01;
+              float ny_sprite = gs.monsters[i].y - gs.monsters[i].player_dist*sin(sprite_dir)*.01;
+              if (int(nx_sprite)>=0 && int(nx_sprite)<int(gs.map.w) && int(ny_sprite)>=0 && int(ny_sprite)<int(gs.map.h)) {
+                  if (gs.map.is_empty(nx_sprite, gs.monsters[i].y)) gs.monsters[i].x = nx_sprite;
+                  if (gs.map.is_empty(gs.monsters[i].x, ny_sprite)) gs.monsters[i].y = ny_sprite;
+              }
+              gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
             }
+
+            // for (size_t i=0; i<gs.monsters.size(); i++) { // update the distances from the player to each sprite
+            //     gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
+            // }
             std::sort(gs.monsters.begin(), gs.monsters.end()); // sort it from farthest to closest
         }
 
@@ -105,4 +119,3 @@ int main() {
 
     return 0;
 }
-
