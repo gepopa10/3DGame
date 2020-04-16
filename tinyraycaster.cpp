@@ -104,4 +104,3 @@ void render(FrameBuffer &fb, const GameState &gs) {
         draw_sprite(fb, sprites[i], depth_buffer, player, tex_monst);
     }
 }
-
