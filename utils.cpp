@@ -26,3 +26,10 @@ void drop_ppm_image(const std::string filename, const std::vector<uint32_t> &ima
     ofs.close();
 }
 
+float getRandom(const float a, const float b)
+{
+  float random = ((float) rand()) / (float) RAND_MAX;
+  float diff = b - a;
+  float r = random * diff;
+  return a + r;
+}

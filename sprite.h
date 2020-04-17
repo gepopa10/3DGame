@@ -8,6 +8,7 @@ struct Sprite {
     size_t tex_id;
     float player_dist;
     float speed;
+    float direction;
     bool operator < (const Sprite& s) const;
 };
 

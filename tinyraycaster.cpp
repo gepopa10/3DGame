@@ -74,13 +74,25 @@ void GameState::update(const double elapsed) {
   for (size_t i=0; i<monsters.size(); i++) { // make the monsters advance in the players direction
     monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
     float sprite_dir = atan2(monsters[i].y - player.y, monsters[i].x - player.x);
-    float nx_sprite = monsters[i].x - monsters[i].player_dist*cos(sprite_dir)*elapsed*monsters[i].speed;
-    float ny_sprite = monsters[i].y - monsters[i].player_dist*sin(sprite_dir)*elapsed*monsters[i].speed;
+
+    // float nx_sprite = monsters[i].x - monsters[i].player_dist*cos(sprite_dir)*elapsed*monsters[i].speed;
+    // float ny_sprite = monsters[i].y - monsters[i].player_dist*sin(sprite_dir)*elapsed*monsters[i].speed;
+
+    float proximityAttackThreshold = 4.0; //If the player is closer than 3 mapcells from a monster it starts attacking
+    if (monsters[i].player_dist < proximityAttackThreshold) monsters[i].direction = sprite_dir; monsters[i].speed = 0.5;
+
+    float nx_sprite = monsters[i].x - cos(monsters[i].direction)*elapsed*monsters[i].speed;
+    float ny_sprite = monsters[i].y - sin(monsters[i].direction)*elapsed*monsters[i].speed;
+
     if (int(nx_sprite)>=0 && int(nx_sprite)<int(map.w) && int(ny_sprite)>=0 && int(ny_sprite)<int(map.h)) {
-        if (map.is_empty(nx_sprite, monsters[i].y)) monsters[i].x = nx_sprite;
-        if (map.is_empty(monsters[i].x, ny_sprite)) monsters[i].y = ny_sprite;
+        if (map.is_empty(nx_sprite, ny_sprite)) { //new position is free of walls
+          monsters[i].x = nx_sprite; monsters[i].y = ny_sprite;
+        } else {//hitting a wall
+          monsters[i].direction += M_PI + getRandom(-M_PI/6, M_PI/6); //turn around + small random angle
+        }
     }
-    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
+
+    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2)); //updating with new dist to sort
   }
 
   std::sort(monsters.begin(), monsters.end()); // sort it from farthest to closest
