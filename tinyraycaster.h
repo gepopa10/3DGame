@@ -2,6 +2,7 @@
 #define TINYRAYCASTER_H
 
 #include <vector>
+#include <algorithm>
 
 #include "map.h"
 #include "player.h"
@@ -15,6 +16,7 @@ struct GameState {
     std::vector<Sprite> monsters;
     Texture tex_walls;
     Texture tex_monst;
+    void update(const double elapsed);
 };
 
 void render(FrameBuffer &fb, const GameState &gs);

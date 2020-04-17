@@ -58,6 +58,34 @@ void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float>
     }
 }
 
+void GameState::update(const double elapsed) {
+  //updating the position of player and monsters
+
+  player.a += float(player.turn)*elapsed; // TODO measure elapsed time and modify the speed accordingly
+  float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
+  float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed;
+
+  //check if the map is empty at the new position before updating
+  if (int(nx)>=0 && int(nx)<int(map.w) && int(ny)>=0 && int(ny)<int(map.h)) {
+      if (map.is_empty(nx, player.y)) player.x = nx;
+      if (map.is_empty(player.x, ny)) player.y = ny;
+  }
+
+  for (size_t i=0; i<monsters.size(); i++) { // make the monsters advance in the players direction
+    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
+    float sprite_dir = atan2(monsters[i].y - player.y, monsters[i].x - player.x);
+    float nx_sprite = monsters[i].x - monsters[i].player_dist*cos(sprite_dir)*elapsed*monsters[i].speed;
+    float ny_sprite = monsters[i].y - monsters[i].player_dist*sin(sprite_dir)*elapsed*monsters[i].speed;
+    if (int(nx_sprite)>=0 && int(nx_sprite)<int(map.w) && int(ny_sprite)>=0 && int(ny_sprite)<int(map.h)) {
+        if (map.is_empty(nx_sprite, monsters[i].y)) monsters[i].x = nx_sprite;
+        if (map.is_empty(monsters[i].x, ny_sprite)) monsters[i].y = ny_sprite;
+    }
+    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
+  }
+
+  std::sort(monsters.begin(), monsters.end()); // sort it from farthest to closest
+}
+
 void render(FrameBuffer &fb, const GameState &gs) {
     const Map &map                     = gs.map;
     const Player &player               = gs.player;
