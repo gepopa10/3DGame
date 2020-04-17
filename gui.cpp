@@ -4,16 +4,12 @@
 #include <chrono>
 #include <thread>
 #include <cmath>
-#include "SDL.h"
 
 #include "utils.h"
 #include "tinyraycaster.h"
+#include "window.h"
 
 int main() {
-    if (SDL_Init(SDL_INIT_VIDEO)) {
-        std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
-        return -1;
-    }
 
     FrameBuffer fb{1024, 512, std::vector<uint32_t>(1024*512, pack_color(255, 255, 255))};
     GameState gs{ Map(),                                // game map
@@ -30,19 +26,7 @@ int main() {
         return -1;
     }
 
-    SDL_Window   *window   = nullptr;
-    SDL_Renderer *renderer = nullptr;
-
-    if (SDL_CreateWindowAndRenderer(fb.w, fb.h, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
-        std::cerr << "Failed to create window and renderer: " << SDL_GetError() << std::endl;
-        return -1;
-    }
-
-    SDL_Texture *framebuffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, fb.w, fb.h);
-    if (!framebuffer_texture) {
-        std::cerr << "Failed to create framebuffer texture : " << SDL_GetError() << std::endl;
-        return -1;
-    }
+    Window guiWindow(fb);
 
     auto t1 = std::chrono::high_resolution_clock::now();
     while (1) {
@@ -100,22 +84,12 @@ int main() {
             //     gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
             // }
             std::sort(gs.monsters.begin(), gs.monsters.end()); // sort it from farthest to closest
-        }
+          }
 
         render(fb, gs); // render the scene to the frambuffer
 
-        { // copy the framebuffer contents to the screen
-            SDL_UpdateTexture(framebuffer_texture, NULL, reinterpret_cast<void *>(fb.img.data()), fb.w*4);
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, framebuffer_texture, NULL, NULL);
-            SDL_RenderPresent(renderer);
-        }
+        guiWindow.display();
     }
-
-    SDL_DestroyTexture(framebuffer_texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
 
     return 0;
 }
