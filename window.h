@@ -3,7 +3,6 @@
 #define WINDOW_H
 
 #include <iostream>
-#include <memory>
 #include "SDL.h"
 
 #include "framebuffer.h"

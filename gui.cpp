@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "tinyraycaster.h"
 #include "window.h"
+#include "event.h"
 
 int main() {
 
@@ -27,6 +28,7 @@ int main() {
     }
 
     Window guiWindow(fb);
+    Event event(gs.player);
 
     auto t1 = std::chrono::high_resolution_clock::now();
     while (1) {
@@ -40,22 +42,7 @@ int main() {
             t1 = t2;
         }
 
-        { // poll events and update player's state (walk/turn flags); TODO: move this block to a more appropriate place
-            SDL_Event event;
-            if (SDL_PollEvent(&event)) {
-                if (SDL_QUIT==event.type || (SDL_KEYDOWN==event.type && SDLK_ESCAPE==event.key.keysym.sym)) break;
-                if (SDL_KEYUP==event.type) { //SDL_KEYUP when user releases button
-                    if ('a'==event.key.keysym.sym || 'd'==event.key.keysym.sym) gs.player.turn = 0;
-                    if ('w'==event.key.keysym.sym || 's'==event.key.keysym.sym) gs.player.walk = 0;
-                }
-                if (SDL_KEYDOWN==event.type) { //SDL_KEYDOWN when user presses
-                    if ('a'==event.key.keysym.sym) gs.player.turn = -1;
-                    if ('d'==event.key.keysym.sym) gs.player.turn =  1;
-                    if ('w'==event.key.keysym.sym) gs.player.walk =  1;
-                    if ('s'==event.key.keysym.sym) gs.player.walk = -1;
-                }
-            }
-        }
+        if (event.processEvent()) break;
 
         { // update player's position; TODO: move this block to a more appropriate place
             gs.player.a += float(gs.player.turn)*.05; // TODO measure elapsed time and modify the speed accordingly
@@ -80,15 +67,11 @@ int main() {
               gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
             }
 
-            // for (size_t i=0; i<gs.monsters.size(); i++) { // update the distances from the player to each sprite
-            //     gs.monsters[i].player_dist = std::sqrt(pow(gs.player.x - gs.monsters[i].x, 2) + pow(gs.player.y - gs.monsters[i].y, 2));
-            // }
             std::sort(gs.monsters.begin(), gs.monsters.end()); // sort it from farthest to closest
           }
 
         render(fb, gs); // render the scene to the frambuffer
-
-        guiWindow.display();
+        guiWindow.display(); //display the scene using SDL
     }
 
     return 0;

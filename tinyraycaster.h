@@ -20,4 +20,3 @@ struct GameState {
 void render(FrameBuffer &fb, const GameState &gs);
 
 #endif // TINYRAYCASTER_H
-
