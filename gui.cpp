@@ -30,7 +30,7 @@ int main() {
     Event eventHandler(gs.player);
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    int fps_rate = 50; //Hz
+    int fps_rate = 100; //Hz
     while (true) {
             // sleep if less than faster than fps_rate
             auto t2 = std::chrono::high_resolution_clock::now();

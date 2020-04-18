@@ -58,6 +58,20 @@ void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float>
     }
 }
 
+void draw_visor(FrameBuffer &fb) {
+  // params of the players visor
+  size_t visorWidth = 16; //in pixels
+  size_t visorHeight = 16;
+  size_t visorThickness = 2;
+  size_t centerEmpty = 4;
+  uint32_t visorColor = pack_color(255, 0, 0); //color of the visor
+
+  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorWidth/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
+  fb.draw_rectangle(fb.w/2 + fb.w/4 + centerEmpty/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
+  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 - visorHeight/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
+  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
+}
+
 void GameState::update(const double elapsed) {
   //updating the position of player and monsters
 
@@ -75,16 +89,15 @@ void GameState::update(const double elapsed) {
     monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
     float sprite_dir = atan2(monsters[i].y - player.y, monsters[i].x - player.x);
 
-    // float nx_sprite = monsters[i].x - monsters[i].player_dist*cos(sprite_dir)*elapsed*monsters[i].speed;
-    // float ny_sprite = monsters[i].y - monsters[i].player_dist*sin(sprite_dir)*elapsed*monsters[i].speed;
-
-    float proximityAttackThreshold = 4.0; //If the player is closer than 3 mapcells from a monster it starts attacking
+    float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
+    float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
     if (monsters[i].player_dist < proximityAttackThreshold) monsters[i].direction = sprite_dir; monsters[i].speed = 0.5;
 
     float nx_sprite = monsters[i].x - cos(monsters[i].direction)*elapsed*monsters[i].speed;
     float ny_sprite = monsters[i].y - sin(monsters[i].direction)*elapsed*monsters[i].speed;
 
-    if (int(nx_sprite)>=0 && int(nx_sprite)<int(map.w) && int(ny_sprite)>=0 && int(ny_sprite)<int(map.h)) {
+    if (int(nx_sprite)>=0 && int(nx_sprite)<int(map.w) && int(ny_sprite)>=0
+        && int(ny_sprite)<int(map.h) && monsters[i].player_dist > proximityToPlayer) {
         if (map.is_empty(nx_sprite, ny_sprite)) { //new position is free of walls
           monsters[i].x = nx_sprite; monsters[i].y = ny_sprite;
         } else {//hitting a wall
@@ -143,4 +156,6 @@ void render(FrameBuffer &fb, const GameState &gs) {
     for (size_t i=0; i<sprites.size(); i++) { // draw the sprites
         draw_sprite(fb, sprites[i], depth_buffer, player, tex_monst);
     }
+
+    draw_visor(fb);
 }

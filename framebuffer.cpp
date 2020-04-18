@@ -23,4 +23,3 @@ void FrameBuffer::draw_rectangle(const size_t rect_x, const size_t rect_y, const
 void FrameBuffer::clear(const uint32_t color) {
     img = std::vector<uint32_t>(w*h, color);
 }
-
