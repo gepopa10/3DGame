@@ -15,4 +15,3 @@ struct FrameBuffer {
 };
 
 #endif // FRAMEBUFFER_H
-

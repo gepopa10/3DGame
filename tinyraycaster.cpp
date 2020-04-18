@@ -75,7 +75,7 @@ void draw_visor(FrameBuffer &fb) {
 void GameState::update(const double elapsed) {
   //updating the position of player and monsters
 
-  player.a += float(player.turn)*elapsed; // TODO measure elapsed time and modify the speed accordingly
+  player.a += float(player.turn)*elapsed;
   float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
   float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed;
 
@@ -86,9 +86,26 @@ void GameState::update(const double elapsed) {
   }
 
   for (size_t i=0; i<monsters.size(); i++) { // make the monsters advance in the players direction
-    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
     float sprite_dir = atan2(monsters[i].y - player.y, monsters[i].x - player.x);
+    monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
 
+    //enabling firing in the direction of the monster
+    if (player.fire){
+      for (float t=0; t<20; t+=.01) { // ray marching loop in players view angle
+          float x = player.x + t*cos(player.a);
+          float y = player.y + t*sin(player.a);
+          if (!map.is_empty(x, y)){
+            float dist = t*cos(player.a);
+            float tolAngleDmgMonsters = M_PI/12;
+            size_t weapongDmgs = 10;
+            if (monsters[i].player_dist < dist && (sprite_dir-player.a)<tolAngleDmgMonsters){ //check if the monsters is not behind a wall and if the player is aiming at him
+              monsters[i].life -= weapongDmgs;
+            }
+            break;
+          }
+        }
+    }
+    //update position of monsters
     float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
     float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
     if (monsters[i].player_dist < proximityAttackThreshold) monsters[i].direction = sprite_dir; monsters[i].speed = 0.5;
@@ -107,6 +124,9 @@ void GameState::update(const double elapsed) {
 
     monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2)); //updating with new dist to sort
   }
+
+  //cleaning monsters who are dead
+  monsters.erase(std::remove_if(monsters.begin(), monsters.end(),[](const Sprite& x) {return x.life <= 0;}), monsters.end());
 
   std::sort(monsters.begin(), monsters.end()); // sort it from farthest to closest
 }

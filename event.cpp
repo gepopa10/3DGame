@@ -14,12 +14,14 @@ bool Event::processEvent(){
       if (SDL_KEYUP==m_event.type) { //SDL_KEYUP when user releases button
           if ('a'==m_event.key.keysym.sym || 'd'==m_event.key.keysym.sym) m_player.turn = 0;
           if ('w'==m_event.key.keysym.sym || 's'==m_event.key.keysym.sym) m_player.walk = 0;
+          if (' '==m_event.key.keysym.sym)  m_player.fire = 0;
       }
       if (SDL_KEYDOWN==m_event.type) { //SDL_KEYDOWN when user presses
           if ('a'==m_event.key.keysym.sym) m_player.turn = -1;
           if ('d'==m_event.key.keysym.sym) m_player.turn =  1;
           if ('w'==m_event.key.keysym.sym) m_player.walk =  1;
           if ('s'==m_event.key.keysym.sym) m_player.walk = -1;
+          if (' '==m_event.key.keysym.sym) m_player.fire = 1;
       }
   }
 
