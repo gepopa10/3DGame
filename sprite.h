@@ -10,7 +10,7 @@ struct Sprite {
     float speed;
     float direction;
     bool aimed;
-    size_t life;
+    int life;
     bool operator < (const Sprite& s) const;
 };
 

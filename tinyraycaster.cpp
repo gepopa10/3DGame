@@ -53,8 +53,11 @@ void draw_sprite(FrameBuffer &fb, Sprite &sprite, const std::vector<float> &dept
             uint32_t color = tex_sprites.get(i*tex_sprites.size/sprite_screen_size, j*tex_sprites.size/sprite_screen_size, sprite.tex_id);
             uint8_t r,g,b,a;
             unpack_color(color, r, g, b, a);
-            if (a>128)
-            fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+            if (a>128){
+              uint8_t r_set = (r-255)*sprite.life/100.0 + 255; //linear function
+              uint32_t color = pack_color(r_set, g, b); //change the color of the sprite depending on his life
+              fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+            }
             if (fb.w/2 + h_offset+i == fb.w/2 + fb.w/4) sprite.aimed = true; //if a single pixel of the sprite is in the center of the view we aimed it
         }
     }
@@ -76,7 +79,6 @@ void draw_visor(FrameBuffer &fb) {
 
 void GameState::update(const double elapsed, const FrameBuffer& fb) {
   //updating the position of player and monsters
-
   player.a += float(player.turn)*elapsed;
   float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
   float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed;
@@ -100,9 +102,9 @@ void GameState::update(const double elapsed, const FrameBuffer& fb) {
           float x = player.x + t*cos(player.a);
           float y = player.y + t*sin(player.a);
           if (!map.is_empty(x, y)){
-            float dist = t*cos(player.a);
-            float distShoot = 8.0; //in m_cells 32 usually
-            size_t weapongDmgs = 50;
+            float dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); ///dist to wall in map size (16)
+            float distShoot = 6.0; //in wall size 16 usually
+            size_t weapongDmgs = 25;
             if (monsters[i].player_dist < fabs(dist) //check if the monsters is not behind a wall
                 && monsters[i].player_dist < distShoot //check if the monster is close enough to be shoot
                 && monsters[i].aimed){ //check if we aimed at monster (is set in draw_sprite in render)

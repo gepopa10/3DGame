@@ -1,14 +1,24 @@
 #include "event.h"
 
 Event::Event(Player& player_in) : m_player(player_in),
-                                  b_m_quit(false) {
+                                  b_m_quit(false),
+                                  m_shootAgain(false) {
 
 }
 
 Event::~Event(){
+
 }
 
-bool Event::processEvent(){
+bool Event::processEvent(std::chrono::time_point<std::chrono::high_resolution_clock>& t1,
+                         const std::chrono::time_point<std::chrono::high_resolution_clock>& t2){
+
+  std::chrono::duration<double,  std::ratio<1>> elapsed_secs = t2 - t1;
+  //m_shootAgain = false;
+  if (elapsed_secs.count() > m_player.reloadTime) {t1 = t2; m_shootAgain = true;}
+
+  m_player.fire = 0;
+
   if (SDL_PollEvent(&m_event)) {
       if (SDL_QUIT==m_event.type || (SDL_KEYDOWN==m_event.type && SDLK_ESCAPE==m_event.key.keysym.sym)) b_m_quit = true;
       if (SDL_KEYUP==m_event.type) { //SDL_KEYUP when user releases button
@@ -21,7 +31,10 @@ bool Event::processEvent(){
           if ('d'==m_event.key.keysym.sym) m_player.turn =  1;
           if ('w'==m_event.key.keysym.sym) m_player.walk =  1;
           if ('s'==m_event.key.keysym.sym) m_player.walk = -1;
-          if (' '==m_event.key.keysym.sym) m_player.fire = 1;
+          if (' '==m_event.key.keysym.sym)
+          {
+            if (m_shootAgain) {m_player.fire = 1; m_shootAgain = false;} //shoot only if we have reloaded
+          }
       }
   }
 

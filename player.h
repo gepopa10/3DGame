@@ -7,6 +7,7 @@ struct Player {
     float fov;  // field of view
     int turn, walk;
     bool fire;
+    float reloadTime;
     float speed;
 };
 
