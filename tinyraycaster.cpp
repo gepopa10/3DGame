@@ -77,7 +77,9 @@ void draw_visor(FrameBuffer &fb) {
   fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
 }
 
-void GameState::update(const double elapsed, const FrameBuffer& fb) {
+void GameState::update(const double elapsed,
+                       const FrameBuffer& fb) {
+
   //updating the position of player and monsters
   player.a += float(player.turn)*elapsed;
   float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
@@ -103,7 +105,7 @@ void GameState::update(const double elapsed, const FrameBuffer& fb) {
           float y = player.y + t*sin(player.a);
           if (!map.is_empty(x, y)){
             float dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); ///dist to wall in map size (16)
-            float distShoot = 6.0; //in wall size 16 usually
+            float distShoot = 8.0; //in wall size 16 usually
             size_t weapongDmgs = 25;
             if (monsters[i].player_dist < fabs(dist) //check if the monsters is not behind a wall
                 && monsters[i].player_dist < distShoot //check if the monster is close enough to be shoot
@@ -114,6 +116,7 @@ void GameState::update(const double elapsed, const FrameBuffer& fb) {
           }
         }
     }
+
     //update position of monsters
     float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
     float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
@@ -132,7 +135,19 @@ void GameState::update(const double elapsed, const FrameBuffer& fb) {
     }
 
     monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2)); //updating with new dist to sort
-  }
+
+    //enable monster to attack player
+    float distanceMonsterAttack = 1; //if monster is closer to distanceMonsterAttack it can inflict damage to player
+    int dmgMonsterAttack = 10;
+    float timeAttackMonster = 1; //minimum time before monster can reattack
+    monsters[i].timefromLastAttack_secs =  std::chrono::high_resolution_clock::now() - monsters[i].timeatLastAttack_secs; //time from last attack
+    if (monsters[i].player_dist < distanceMonsterAttack && monsters[i].timefromLastAttack_secs.count() > timeAttackMonster) {
+      player.life -= dmgMonsterAttack;
+      monsters[i].timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
+    }
+
+  } //end loop on monsters
+  std::cout << "player.life " << player.life << std::endl;
 
   //cleaning monsters who are dead
   monsters.erase(std::remove_if(monsters.begin(), monsters.end(),[](const Sprite& x) {return x.life <= 0;}), monsters.end());

@@ -9,6 +9,7 @@ struct Player {
     bool fire;
     float reloadTime;
     float speed;
+    int life;
 };
 
 #endif // PLAYER_H
