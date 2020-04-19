@@ -34,7 +34,7 @@ void draw_map(FrameBuffer &fb, const std::vector<Sprite> &sprites, const Texture
     }
 }
 
-void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float> &depth_buffer, const Player &player, const Texture &tex_sprites) {
+void draw_sprite(FrameBuffer &fb, Sprite &sprite, const std::vector<float> &depth_buffer, const Player &player, const Texture &tex_sprites) {
     // absolute direction from the player to the sprite (in radians)
     float sprite_dir = atan2(sprite.y - player.y, sprite.x - player.x);
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
@@ -44,6 +44,7 @@ void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float>
     int h_offset = (sprite_dir - player.a)*(fb.w/2)/(player.fov) + (fb.w/2)/2 - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
+    sprite.aimed = false;
     for (size_t i=0; i<sprite_screen_size; i++) {
         if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
         if (depth_buffer[h_offset+i]<sprite.player_dist) continue; // this sprite column is occluded
@@ -54,6 +55,7 @@ void draw_sprite(FrameBuffer &fb, const Sprite &sprite, const std::vector<float>
             unpack_color(color, r, g, b, a);
             if (a>128)
             fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+            if (fb.w/2 + h_offset+i == fb.w/2 + fb.w/4) sprite.aimed = true; //if a single pixel of the sprite is in the center of the view we aimed it
         }
     }
 }
@@ -72,7 +74,7 @@ void draw_visor(FrameBuffer &fb) {
   fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
 }
 
-void GameState::update(const double elapsed) {
+void GameState::update(const double elapsed, const FrameBuffer& fb) {
   //updating the position of player and monsters
 
   player.a += float(player.turn)*elapsed;
@@ -87,8 +89,11 @@ void GameState::update(const double elapsed) {
 
   for (size_t i=0; i<monsters.size(); i++) { // make the monsters advance in the players direction
     float sprite_dir = atan2(monsters[i].y - player.y, monsters[i].x - player.x);
+    while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
+    while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
     monsters[i].player_dist = std::sqrt(pow(player.x - monsters[i].x, 2) + pow(player.y - monsters[i].y, 2));
 
+    size_t sprite_screen_size = std::min(2000, static_cast<int>(fb.h/monsters[i].player_dist)); // screen sprite size in pixels
     //enabling firing in the direction of the monster
     if (player.fire){
       for (float t=0; t<20; t+=.01) { // ray marching loop in players view angle
@@ -96,9 +101,11 @@ void GameState::update(const double elapsed) {
           float y = player.y + t*sin(player.a);
           if (!map.is_empty(x, y)){
             float dist = t*cos(player.a);
-            float tolAngleDmgMonsters = M_PI/12;
-            size_t weapongDmgs = 10;
-            if (monsters[i].player_dist < dist && (sprite_dir-player.a)<tolAngleDmgMonsters){ //check if the monsters is not behind a wall and if the player is aiming at him
+            float distShoot = 8.0; //in m_cells 32 usually
+            size_t weapongDmgs = 50;
+            if (monsters[i].player_dist < fabs(dist) //check if the monsters is not behind a wall
+                && monsters[i].player_dist < distShoot //check if the monster is close enough to be shoot
+                && monsters[i].aimed){ //check if we aimed at monster (is set in draw_sprite in render)
               monsters[i].life -= weapongDmgs;
             }
             break;
@@ -131,10 +138,10 @@ void GameState::update(const double elapsed) {
   std::sort(monsters.begin(), monsters.end()); // sort it from farthest to closest
 }
 
-void render(FrameBuffer &fb, const GameState &gs) {
+void render(FrameBuffer &fb, GameState &gs) {
     const Map &map                     = gs.map;
     const Player &player               = gs.player;
-    const std::vector<Sprite> &sprites = gs.monsters;
+    std::vector<Sprite> &sprites = gs.monsters;
     const Texture &tex_walls           = gs.tex_walls;
     const Texture &tex_monst           = gs.tex_monst;
 

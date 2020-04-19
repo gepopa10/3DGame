@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <algorithm>
+#include <iomanip>
+
+#include "SDL.h"
 
 #include "map.h"
 #include "player.h"
@@ -16,9 +19,9 @@ struct GameState {
     std::vector<Sprite> monsters;
     Texture tex_walls;
     Texture tex_monst;
-    void update(const double elapsed);
+    void update(const double elapsed, const FrameBuffer& fb);
 };
 
-void render(FrameBuffer &fb, const GameState &gs);
+void render(FrameBuffer &fb, GameState &gs);
 
 #endif // TINYRAYCASTER_H
