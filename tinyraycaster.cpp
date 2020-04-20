@@ -77,6 +77,20 @@ void draw_visor(FrameBuffer &fb) {
   fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
 }
 
+void draw_lifeJauge(FrameBuffer &fb, const GameState &gs) {
+  // params of the players visor
+  size_t lengthfull = 100; //in pixels
+  size_t height = 30;
+  size_t x = fb.w - 10 - lengthfull;
+  size_t y = fb.h - 10 - height;
+
+  uint32_t emptyColor = pack_color(0, 0, 0); //color of the empty life gauge
+  uint32_t fullColor = pack_color(255, 0, 0); //color of the full life gauge
+
+  fb.draw_rectangle(x, y, lengthfull*gs.player.life/100.0, height, fullColor);
+  fb.draw_rectangle(x + lengthfull*gs.player.life/100.0, y, lengthfull - lengthfull*gs.player.life/100.0, height, emptyColor);
+}
+
 void GameState::update(const double elapsed,
                        const FrameBuffer& fb) {
 
@@ -158,7 +172,7 @@ void GameState::update(const double elapsed,
 void render(FrameBuffer &fb, GameState &gs) {
     const Map &map                     = gs.map;
     const Player &player               = gs.player;
-    std::vector<Sprite> &sprites = gs.monsters;
+    std::vector<Sprite> &sprites       = gs.monsters;
     const Texture &tex_walls           = gs.tex_walls;
     const Texture &tex_monst           = gs.tex_monst;
 
@@ -202,4 +216,5 @@ void render(FrameBuffer &fb, GameState &gs) {
     }
 
     draw_visor(fb);
+    draw_lifeJauge(fb, gs);
 }

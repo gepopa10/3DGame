@@ -19,15 +19,15 @@ int main() {
     //               Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888),  // textures for the walls
     //               Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888)}; // textures for the monsters
 
-                  GameState gs{ Map(),                                     // game map
-                                {1.456, 1.345, 0.523, M_PI/3., 0, 0, 0, 0.5, 1, 100},   // player
-                                { {3.523, 3.812, 2, 0, 0.01, M_PI/2., 0, 100},
-                              {1.834, 8.765, 0, 0, 0.01, M_PI/2., 0, 100},
-                            {5.323, 5.365, 1, 0, 0.01, M_PI/2., 0, 100},
-                          {14.32, 13.36, 3, 0, 0.01, M_PI/2., 0, 100},
-                        {4.123, 10.76, 1, 0, 0.01, M_PI/2., 0, 100} }, //monsters lists
-                                Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888),  // textures for the walls
-                                Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888)}; // textures for the monsters
+       GameState gs{ Map(),                                                     // game map
+                     {1.456, 1.345, 0.523, M_PI/3., 0, 0, 0, 0.5, 1, 100},      // player
+                     { {3.523, 3.812, 2, 0, 0.01, M_PI/2., 0, 100},
+                       {1.834, 8.765, 0, 0, 0.01, M_PI/2., 0, 100},
+                       {5.323, 5.365, 1, 0, 0.01, M_PI/2., 0, 100},
+                       {14.32, 13.36, 3, 0, 0.01, M_PI/2., 0, 100},
+                        {4.123, 10.76, 1, 0, 0.01, M_PI/2., 0, 100} },          //monsters lists
+                     Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888),      // textures for the walls
+                     Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888)};     // textures for the monsters
     if (!gs.tex_walls.count || !gs.tex_monst.count) {
         std::cerr << "Failed to load textures" << std::endl;
         return -1;
