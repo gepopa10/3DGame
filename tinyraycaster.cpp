@@ -9,16 +9,17 @@
 int wall_x_texcoord(const float hitx, const float hity, const Texture &tex_walls) {
     float x = hitx - floor(hitx+.5); // x and y contain (signed) fractional parts of hitx and hity,
     float y = hity - floor(hity+.5); // they vary between -0.5 and +0.5, and one of them is supposed to be very close to 0
-    int tex = x*tex_walls.size;
+    int tex = x*tex_walls.size_x;
     if (std::abs(y)>std::abs(x)) // we need to determine whether we hit a "vertical" or a "horizontal" wall (w.r.t the map)
-        tex = y*tex_walls.size;
+        tex = y*tex_walls.size_x;
     if (tex<0) // do not forget x_texcoord can be negative, fix that
-        tex += tex_walls.size;
-    assert(tex>=0 && tex<(int)tex_walls.size);
+        tex += tex_walls.size_x;
+    assert(tex>=0 && tex<(int)tex_walls.size_x);
     return tex;
 }
 
-void draw_map(FrameBuffer &fb, const std::vector<Sprite> &sprites, const Texture &tex_walls, const Map &map, const size_t cell_w, const size_t cell_h) {
+void draw_map(FrameBuffer &fb, const std::vector<Sprite> &sprites, const Texture &tex_walls,
+              const Map &map, const size_t cell_w, const size_t cell_h) {
     for (size_t j=0; j<map.h; j++) {  // draw the map itself
         for (size_t i=0; i<map.w; i++) {
             if (map.is_empty(i, j)) continue; // skip empty spaces
@@ -34,7 +35,8 @@ void draw_map(FrameBuffer &fb, const std::vector<Sprite> &sprites, const Texture
     }
 }
 
-void draw_sprite(FrameBuffer &fb, Sprite &sprite, const std::vector<float> &depth_buffer, const Player &player, const Texture &tex_sprites) {
+void draw_sprite(FrameBuffer &fb, Sprite &sprite, const std::vector<float> &depth_buffer,
+                 const Player &player, const Texture &tex_sprites) {
     // absolute direction from the player to the sprite (in radians)
     float sprite_dir = atan2(sprite.y - player.y, sprite.x - player.x);
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
@@ -50,7 +52,7 @@ void draw_sprite(FrameBuffer &fb, Sprite &sprite, const std::vector<float> &dept
         if (depth_buffer[h_offset+i]<sprite.player_dist) continue; // this sprite column is occluded
         for (size_t j=0; j<sprite_screen_size; j++) {
             if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
-            uint32_t color = tex_sprites.get(i*tex_sprites.size/sprite_screen_size, j*tex_sprites.size/sprite_screen_size, sprite.tex_id);
+            uint32_t color = tex_sprites.get(i*tex_sprites.size_x/sprite_screen_size, j*tex_sprites.size_y/sprite_screen_size, sprite.tex_id);
             uint8_t r,g,b,a;
             unpack_color(color, r, g, b, a);
             if (a>128){

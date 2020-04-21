@@ -5,12 +5,12 @@ Window::Window(FrameBuffer& fb_in, GameState& gs_in) : m_fb(fb_in),
                                      m_window(nullptr),
                                      m_renderer(nullptr),
                                      m_framebuffer_texture(nullptr){
-  if (SDL_Init(SDL_INIT_VIDEO)) {
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
       std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
       //return -1;
   }
 
-  if (SDL_CreateWindowAndRenderer(m_fb.w, m_fb.h, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS, &m_window, &m_renderer)) { //deferenciate because it requires double pointers
+  if (SDL_CreateWindowAndRenderer(m_fb.w, m_fb.h, SDL_WINDOWPOS_CENTERED | SDL_WINDOW_BORDERLESS, &m_window, &m_renderer)) { //deferenciate because it requires double pointers
       std::cerr << "Failed to create window and renderer: " << SDL_GetError() << std::endl;
       //return -1;
   }

@@ -23,9 +23,11 @@ enable_cxx_compiler_flag_if_supported("-O3")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
-set(CMAKE_MODULE_PATH /home/gepopa/tinyraycaster)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(SDL2TTF REQUIRED)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_gfx REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2TTF_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_GFX_INCLUDE_DIRS})
 
 
 file(GLOB SOURCES
@@ -34,5 +36,5 @@ file(GLOB SOURCES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_GFX_LIBRARIES} ${SDL2TTF_LIBRARY})
 target_include_directories(${PROJECT_NAME} PRIVATE "${SRC_DIR}")

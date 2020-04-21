@@ -1,14 +1,9 @@
-#include <iostream>
-#include <cassert>
-#include "SDL.h"
-
-#include "utils.h"
 #include "textures.h"
 
-Texture::Texture(const std::string filename, const uint32_t format) : img_w(0), img_h(0), count(0), size(0), img() {
-    SDL_Surface *tmp = SDL_LoadBMP(filename.c_str());
+Texture::Texture(const std::string filename, const uint32_t format, const int cols, const int rows) : img_w(0), img_h(0), count(0), size_x(0), img() {
+    SDL_Surface *tmp = IMG_Load(filename.c_str());
     if (!tmp) {
-        std::cerr << "Error in SDL_LoadBMP: " << SDL_GetError() << std::endl;
+        std::cerr << "Error in IMG_Load: " << SDL_GetError() << std::endl;
         return;
     }
 
@@ -21,21 +16,14 @@ Texture::Texture(const std::string filename, const uint32_t format) : img_w(0), 
 
     int w = surface->w;
     int h = surface->h;
+    std::cout << "w: " << w << "h: " << h << "surface->pitch" << surface->pitch << std::endl;
 
-    if (w*4!=surface->pitch) {
-        std::cerr << "Error: the texture must be a 32 bit image" << std::endl;
-        SDL_FreeSurface(surface);
-        return;
-    }
-    if (w!=h*int(w/h)) {
-        std::cerr << "Error: the texture file must contain N square textures packed horizontally" << std::endl;
-        SDL_FreeSurface(surface);
-        return;
-    }
-    count = w/h;
-    size = w/count;
+    count = cols*rows;
+    size_x = w/cols;
+    size_y = h/rows;
     img_w = w;
     img_h = h;
+    std::cout << "img_h: " << img_h << "size_y: " << size_y << "(idx % img_h/size_y)" << (1 % int(img_h/size_y)) << std::endl;
     uint8_t *pixmap = reinterpret_cast<uint8_t *>(surface->pixels);
 
     img = std::vector<uint32_t>(w*h);
@@ -52,16 +40,23 @@ Texture::Texture(const std::string filename, const uint32_t format) : img_w(0), 
 }
 
 uint32_t Texture::get(const size_t i, const size_t j, const size_t idx) const {
-    assert(i<size && j<size && idx<count);
-    return img[i+idx*size+j*img_w];
+    assert(i<size_x && j<size_y && idx<count);
+    //return the i,j pixel in sprite from an index in a nxm sprites image -0-1-2->
+    //                                                                    -3-4-5->
+    //Works for for non square sprite from nxm sprites image file
+    //take the modulo to eliminate rows since we pack the row of sprites fully before going to the next row so we need
+    //to jump from floor(idx/(int(img_w/size_x)))*size_y when we go to next row and
+    //(idx % int(img_w/size_x))*size_x to go to next column if idx < cols we want the modulo to return idx here
+    //and floor(idx/(int(img_w/size_x))) should return 0 if idx < rows because it takes the whole of the idx divided by the nb
+    //of cols so we stay in the first row.
+    return img[i+(idx % int(img_w/size_x))*size_x + (j+ floor(idx/(int(img_w/size_x)))*size_y)*img_w];
 }
 
 std::vector<uint32_t> Texture::get_scaled_column(const size_t texture_id, const size_t tex_coord, const size_t column_height) const {
-    assert(tex_coord<size && texture_id<count);
+    assert(tex_coord<size_x && texture_id<count);
     std::vector<uint32_t> column(column_height);
     for (size_t y=0; y<column_height; y++) {
-        column[y] = get(tex_coord, (y*size)/column_height, texture_id);
+        column[y] = get(tex_coord, (y*size_x)/column_height, texture_id);
     }
     return column;
 }
-
