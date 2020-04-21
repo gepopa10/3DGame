@@ -33,7 +33,7 @@ int main() {
         return -1;
     }
 
-    Window guiWindow(fb);
+    Window guiWindow(fb, gs);
     Event eventHandler(gs.player);
 
     auto t1 = std::chrono::high_resolution_clock::now();

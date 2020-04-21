@@ -155,13 +155,12 @@ void GameState::update(const double elapsed,
     int dmgMonsterAttack = 10;
     float timeAttackMonster = 1; //minimum time before monster can reattack
     monsters[i].timefromLastAttack_secs =  std::chrono::high_resolution_clock::now() - monsters[i].timeatLastAttack_secs; //time from last attack
-    if (monsters[i].player_dist < distanceMonsterAttack && monsters[i].timefromLastAttack_secs.count() > timeAttackMonster) {
+    if (monsters[i].player_dist < distanceMonsterAttack && monsters[i].timefromLastAttack_secs.count() > timeAttackMonster && player.life > 0) {
       player.life -= dmgMonsterAttack;
       monsters[i].timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
     }
 
   } //end loop on monsters
-  std::cout << "player.life " << player.life << std::endl;
 
   //cleaning monsters who are dead
   monsters.erase(std::remove_if(monsters.begin(), monsters.end(),[](const Sprite& x) {return x.life <= 0;}), monsters.end());
