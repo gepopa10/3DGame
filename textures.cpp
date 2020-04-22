@@ -16,14 +16,13 @@ Texture::Texture(const std::string filename, const uint32_t format, const int co
 
     int w = surface->w;
     int h = surface->h;
-    std::cout << "w: " << w << "h: " << h << "surface->pitch" << surface->pitch << std::endl;
 
     count = cols*rows;
     size_x = w/cols;
     size_y = h/rows;
     img_w = w;
     img_h = h;
-    std::cout << "img_h: " << img_h << "size_y: " << size_y << "(idx % img_h/size_y)" << (1 % int(img_h/size_y)) << std::endl;
+
     uint8_t *pixmap = reinterpret_cast<uint8_t *>(surface->pixels);
 
     img = std::vector<uint32_t>(w*h);

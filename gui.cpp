@@ -13,11 +13,14 @@ int main() {
 
     FrameBuffer fb{1024, 512, std::vector<uint32_t>(1024*512, pack_color(255, 255, 255))};
 
-    GameState gs{ Map(),                                                                  // game map
-                  {1.456, 1.345, M_PI/2, M_PI/3., 0, 0, 0, 0.5, 1,100},                   // player
-                  { {3.523, 9.812, 3, 0, 0.01, M_PI/2., 0, 100} },                        //monsters lists
-                  Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1),             // textures for the walls
-                  Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3)};        // textures for the monsters
+    Texture death_knight = Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3);        // textures for the monsters
+    Texture static_monsters = Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888, 4, 1);         // textures for the monsters
+
+    GameState gs{ Map(),                                                                          // game map
+                  {1.456, 1.345, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                       // player
+                  {std::make_shared<MonsterAnimated>(1.523, 12.812, death_knight, 3, 0, 0.01, M_PI/2., 0, 100),      //monsters lists
+                   std::make_shared<Monster>(3.32, 8.36, static_monsters, 0, 0, 0.01, M_PI/2., 0, 100)},
+                   Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)      };             // textures for the walls
 
        // GameState gs{ Map(),                                                            // game map
        //               {1.456, 1.345, 0.523, M_PI/3., 0, 0, 0, 0.5, 1, 100},             // player
@@ -28,7 +31,7 @@ int main() {
        //                  {4.123, 10.76, 10, 0, 0.01, M_PI/2., 0, 100} },                //monsters lists
        //               Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1),       // textures for the walls
        //               Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3)};  // textures for the monsters
-    if (!gs.tex_walls.count || !gs.tex_monst.count) {
+    if (!gs.tex_walls.count || !death_knight.count) {
         std::cerr << "Failed to load textures" << std::endl;
         return -1;
     }
@@ -46,7 +49,7 @@ int main() {
         std::chrono::duration<double, std::milli> fp_ms = t2 - t1;
         std::chrono::duration<double,  std::ratio<1>> elapsed_secs = t2 - t1;
         if (eventHandler.processEvent(t1_reload, t2_reload)) break; //check keyboard events at while loop frequency
-        gs.update(elapsed_secs.count(), fb);  //update positions at the same rate as eventHandler which moves player
+        gs.update(elapsed_secs.count());  //update positions at the same rate as eventHandler which moves player
 
         if (fp_ms.count()<1/fps_rate*1000) { // sleep if less than faster than fps_rate
             std::this_thread::sleep_for(std::chrono::milliseconds(2));

@@ -3,18 +3,29 @@
 
 #include <cstdlib>
 #include <chrono>
+#include <algorithm>
+#include <iomanip>
+#include <memory>
+
+#include "player.h"
+#include "textures.h"
+#include "framebuffer.h"
 
 struct Sprite {
     float x, y;
+    Texture texture;
     size_t tex_id;
     float player_dist;
-    float speed;
-    float direction;
-    bool aimed;
-    int life;
-    std::chrono::duration<double,  std::ratio<1>> timefromLastAttack_secs;
-    std::chrono::time_point<std::chrono::high_resolution_clock> timeatLastAttack_secs;
-    bool operator < (const Sprite& s) const;
+
+    Sprite(float x_in,
+           float y_in,
+           Texture texture_in,
+           size_t tex_id_in = 0,
+           float player_dist_in = 10000);
+
+    virtual void draw_sprite(FrameBuffer &fb,
+                             const std::vector<float> &depth_buffer,
+                             const Player &player);
 };
 
 #endif // SPRITE_H
