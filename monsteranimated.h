@@ -5,11 +5,15 @@
 
 struct MonsterAnimated : Monster {
 
-    typedef enum {Walk, Attack, Die} State; //state in which the animated sprite is
-    State m_state = Walk;
+    // MonsterAnimated seems to inherite the States enum this from Monster
+    // typedef enum {randomWalk_state, attack_state, dead_state} States; //state in which the animated monster is
+    // States state = randomWalk_state;
+    typedef enum {check, move, shoot, die} Animations; //animation texture in which the animated monster is
+    Animations animation = check;
 
     using Monster::Monster; //inheriting constructor
-    void setState(State state_in);
+
+
 };
 
 #endif // MONSTERANIMATED_H

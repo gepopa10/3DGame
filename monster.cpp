@@ -49,35 +49,49 @@ void Monster::draw_sprite(FrameBuffer &fb,
     }
 }
 
-void Monster::updatePosition(const Map &map, Player &player, const double elapsed){
-  float sprite_dir = atan2(y - player.y, x - player.x);
-  while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
-  while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
+void Monster::update(const Map &map, Player &player, const double elapsed){
 
-  //enabling firing in the direction of the monster
+  //check and updated if the player attacks monster
+  attacked(map, player);
+  //change the state depending on the proximity of the monster to player
+  checkandUpdateState(map, player);
+  //take action based on state of the monster
+  action(map, player, elapsed);
+}
+
+void Monster::attacked(const Map &map, const Player &player){
   if (player.fire){
     for (float t=0; t<20; t+=.01) { // ray marching loop in players view angle
         float x = player.x + t*cos(player.a);
         float y = player.y + t*sin(player.a);
         if (!map.is_empty(x, y)){
           float dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); ///dist to wall in map size (16)
-          float distShoot = 8.0; //in wall size 16 usually
-          size_t weapongDmgs = 25;
           if (player_dist < fabs(dist) //check if the monsters is not behind a wall
-              && player_dist < distShoot //check if the monster is close enough to be shoot
+              && player_dist < player.distShoot //check if the monster is close enough to be shoot
               && aimed){ //check if we aimed at monster (is set in draw_sprite in render)
-            life -= weapongDmgs;
+            life -= player.weapongDmgs;
           }
           break;
         }
       }
   }
+}
 
-  //update position of monsters
-  float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
-  float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
-  if (player_dist < proximityAttackThreshold) direction = sprite_dir; speed = 0.5;
+void Monster::checkandUpdateState(const Map &map, const Player &player){
+  float sprite_dir = atan2(y - player.y, x - player.x);
+  while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
+  while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
+  player_dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2));
+  if (player_dist < proximityAttackThreshold) {
+    direction = sprite_dir;
+    state = attack_state;
+  } else {
+    state = randomWalk_state;
+  }
+}
 
+void Monster::updatePosition(const Map &map, const Player &player, const double elapsed){
+  //update position of the monster based on his set direction
   float nx_sprite = x - cos(direction)*elapsed*speed;
   float ny_sprite = y - sin(direction)*elapsed*speed;
 
@@ -89,13 +103,24 @@ void Monster::updatePosition(const Map &map, Player &player, const double elapse
         direction += M_PI + getRandom(-M_PI/6, M_PI/6); //turn around + small random angle
       }
   }
-
   player_dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); //updating with new dist to sort
+}
 
+void Monster::action(const Map &map, Player &player, const double elapsed){
+  switch(state) {
+    case attack_state:
+      attack(map, player, elapsed);
+      break;
+    case randomWalk_state:
+      updatePosition(map, player,elapsed);
+      break;
+  }
+}
+
+void Monster::attack(const Map &map, Player &player, const double elapsed){
+  updatePosition(map, player, elapsed);
+  speed = 0.8; //increase speed if in proximity
   //enable monster to attack player
-  float distanceMonsterAttack = 1; //if monster is closer to distanceMonsterAttack it can inflict damage to player
-  int dmgMonsterAttack = 10;
-  float timeAttackMonster = 1; //minimum time before monster can reattack
   timefromLastAttack_secs =  std::chrono::high_resolution_clock::now() - timeatLastAttack_secs; //time from last attack
   if (player_dist < distanceMonsterAttack && timefromLastAttack_secs.count() > timeAttackMonster && player.life > 0) {
     player.life -= dmgMonsterAttack;

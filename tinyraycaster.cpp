@@ -80,11 +80,13 @@ void GameState::update(const double elapsed) {
 
     sprite->player_dist = std::sqrt(pow(player.x - sprite->x, 2) + pow(player.y - sprite->y, 2));
 
+    //dealing with movable monsters
     std::shared_ptr<Monster> maybeMonster = std::dynamic_pointer_cast<Monster>(sprite); //we use dynamic_pointer_cast because Monster is a shared_ptr
     if (maybeMonster != nullptr) // Cast succeeded, the sprite is a monster
     {
-        maybeMonster->updatePosition(map, player, elapsed); // make the monsters advance in the players direction and other update
-        if (maybeMonster->life <= 0) sprite = nullptr; //set the pointer to null if the monster is dead so it gets erased after
+        maybeMonster->update(map, player, elapsed); // make the monsters advance in the players direction and other update
+        //set the pointer to null if the monster is dead so it gets erased after
+        if (maybeMonster->life <= 0) {maybeMonster->state = Monster::dead_state; sprite = nullptr;}
     }
   }
 
