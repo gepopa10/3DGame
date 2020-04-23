@@ -11,7 +11,7 @@ struct Monster : Sprite {
     bool aimed;
     int life;
     std::chrono::duration<double,  std::ratio<1>> timefromLastAttack_secs;
-    std::chrono::time_point<std::chrono::high_resolution_clock> timeatLastAttack_secs;
+    std::chrono::time_point<std::chrono::high_resolution_clock> timeatLastAttack_secs = std::chrono::high_resolution_clock::now();
 
     const float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
     const float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
