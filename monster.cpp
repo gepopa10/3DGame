@@ -40,8 +40,7 @@ void Monster::draw_sprite(FrameBuffer &fb,
             uint8_t r,g,b,a;
             unpack_color(color, r, g, b, a);
             if (a>128){
-              uint8_t r_set = (r-255)*life/100.0 + 255; //linear function
-              uint32_t color = pack_color(r_set, g, b); //change the color of the sprite depending on his life
+              uint32_t color = pack_color(changeColorLife(r), g, b); //change the color of the sprite depending on his life
               fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
             }
             if (fb.w/2 + h_offset+i == fb.w/2 + fb.w/4) aimed = true; //if a single pixel of the sprite is in the center of the view we aimed it
@@ -82,6 +81,7 @@ void Monster::checkandUpdateState(const Map &map, const Player &player){
   while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
   while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
   player_dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2));
+
   if (player_dist < proximityAttackThreshold) {
     direction = sprite_dir;
     state = attack_state;
@@ -126,4 +126,12 @@ void Monster::attack(const Map &map, Player &player, const double elapsed){
     player.life -= dmgMonsterAttack;
     timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
   }
+}
+
+void Monster::manageDead(std::shared_ptr<Sprite> &sprite){
+  sprite = nullptr; //just setting the sprite pointer to null to avoid drawing it in the next update
+}
+
+uint8_t Monster::changeColorLife(const uint8_t r){
+  return (r-255)*life/100.0 + 255; //linear function
 }

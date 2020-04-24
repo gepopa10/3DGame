@@ -41,6 +41,8 @@ struct Monster : Sprite {
     virtual void updatePosition(const Map &map, const Player &player, const double elapsed);
     virtual void action(const Map &map, Player &player, const double elapsed);
     virtual void attack(const Map &map, Player &player, const double elapsed);
+    virtual void manageDead(std::shared_ptr<Sprite> &sprite);
+    virtual uint8_t changeColorLife(const uint8_t r);
 
 };
 

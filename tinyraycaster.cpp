@@ -86,7 +86,7 @@ void GameState::update(const double elapsed) {
     {
         maybeMonster->update(map, player, elapsed); // make the monsters advance in the players direction and other update
         //set the pointer to null if the monster is dead so it gets erased after
-        if (maybeMonster->life <= 0) {maybeMonster->state = Monster::dead_state; sprite = nullptr;}
+        if (maybeMonster->life <= 0) {maybeMonster->state = Monster::dead_state; maybeMonster->manageDead(sprite);}
     }
   }
 

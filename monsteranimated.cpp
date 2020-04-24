@@ -17,10 +17,9 @@ MonsterAnimated::MonsterAnimated(float x_in,
                                          speed_in,
                                          direction_in,
                                          aimed_in,
-                                         life_in){
+                                         life_in),
+                                 directionIni(direction_in){
 
-  // animationFinished = true;
-  //timeDurationCurrentAnime_secs(0);
   std::chrono::duration<double,  std::ratio<1>> d1(1);
   std::chrono::duration<double,  std::ratio<1>> d2(2);
   std::chrono::duration<double,  std::ratio<1>> d3(3);
@@ -38,10 +37,18 @@ void MonsterAnimated::updatePosition(const Map &map, const Player &player, const
 
   if (int(nx_sprite)>=0 && int(nx_sprite)<int(map.w) && int(ny_sprite)>=0
       && int(ny_sprite)<int(map.h) && player_dist > proximityToPlayer) {
-      if (map.is_empty(nx_sprite, ny_sprite)) { //new position is free of walls
+      if (map.is_empty(nx_sprite - distanceWall*cos(direction), ny_sprite) &&
+          map.is_empty(nx_sprite - distanceWall*cos(direction), ny_sprite - distanceWall*sin(direction)) &&
+          map.is_empty(nx_sprite, ny_sprite - distanceWall*sin(direction)) &&
+          map.is_empty(nx_sprite, ny_sprite) && //new position is free of walls from a distanceWall
+          (distanceSameDirection <= maxDistanceSameDirection)){ //we dont travel too much in same direction except in attack mode!
+
+        distanceSameDirection += std::sqrt(pow(x - nx_sprite, 2) + pow(y - ny_sprite, 2));
         x = nx_sprite; y = ny_sprite;
-      } else {//hitting a wall
-        direction += M_PI + getRandom(-M_PI/6, M_PI/6); //turn around + small random angle
+
+      } else {//hitting a wall or change direction because too much in same direction
+        direction += M_PI; //opposite direction
+        distanceSameDirection = 0;
       }
   }
   player_dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); //updating with new dist to sort
@@ -51,11 +58,16 @@ void MonsterAnimated::action(const Map &map, Player &player, const double elapse
   animateMonster();
   switch(state) {
     case attack_state:
+      distanceSameDirection = 0;
       attack(map, player, elapsed);
       break;
     case randomWalk_state:
+      if (((fmod(direction,M_PI/2.0)-floor(fmod(direction,M_PI/2.0))) > 0.1)) {
+        direction = directionIni;} //we reset the direction that was changed by attack_mode
       if (animationFinished) {animation = check; animationFinished = false;}
       updatePosition(map, player,elapsed);
+      break;
+    case dead_state:
       break;
   }
 }
@@ -70,9 +82,10 @@ void MonsterAnimated::attack(const Map &map, Player &player, const double elapse
     animation = shoot;
     animationFinished = false;
     timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
-  } else {
-    //updatePosition(map, player, elapsed);
-    if (animationFinished) {animation = move; updatePosition(map, player, elapsed);}
+  } else if (animationFinished){
+    animation = move;
+    updatePosition(map, player, elapsed);
+    if (player_dist <= proximityToPlayer) animation = stay;
   }
 }
 
@@ -107,12 +120,30 @@ void MonsterAnimated::animateMonster(){
       break;
     case die:
       tex_id = 8;
-      if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[0] && timeDurationCurrentAnime_secs > dieAnimationTimes_secs[1])
+      if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[0] && timeDurationCurrentAnime_secs < dieAnimationTimes_secs[1])
         tex_id = 9;
-      else if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[1] && timeDurationCurrentAnime_secs > dieAnimationTimes_secs[2])
-        tex_id = 10;
-      else if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[2])
-        {timeStartedAnime_secs = std::chrono::high_resolution_clock::now(); animationFinished = true;}
+      else if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[1])
+        tex_id = 10; //dont set animationFinished to true because we want to keep this texture
       break;
+    case stay:
+      tex_id = 4;
+  }
+}
+
+void MonsterAnimated::manageDead(std::shared_ptr<Sprite> &sprite){
+  animation = die; animationFinished = false;
+}
+
+void MonsterAnimated::checkandUpdateState(const Map &map, const Player &player){
+  float sprite_dir = atan2(y - player.y, x - player.x);
+  while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
+  while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
+  player_dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2));
+
+  if (player_dist < proximityAttackThreshold) {
+    direction = sprite_dir;
+    state = attack_state;
+  } else {
+    state = randomWalk_state;
   }
 }
