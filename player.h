@@ -2,6 +2,8 @@
 #define PLAYER_H
 
 #include <chrono>
+#include <string>
+#include <map>
 
 #include "textures.h"
 #include "framebuffer.h"
@@ -9,6 +11,7 @@
 class Player {
 
   public:
+
     Player(float x_in,
            float y_in,
            Texture texture_in,
@@ -19,28 +22,8 @@ class Player {
            bool fire_in= 0,
            float reloadTime_in= 0,
            float speed_in= 0.5,
-           int life_in= 100,
-           const float distShoot_in= 8.0,
-           const size_t weapongDmgs_in= 25):
-           x(x_in),
-           y(y_in),
-           texture(texture_in),
-           a(a_in),
-           fov(fov_in),
-           turn(turn_in),
-           walk(walk_in),
-           fire(fire_in),
-           reloadTime(reloadTime_in),
-           speed(speed_in),
-           life(life_in),
-           distShoot(distShoot_in),
-           weapongDmgs(weapongDmgs_in){
+           int life_in= 100);
 
-             std::chrono::duration<double,  std::ratio<1>> d_fire(0.1);
-             fireAnimationTimes_secs = {d_fire, d_fire*2, d_fire*3, d_fire*4, d_fire*5};
-             weapon_text_ids = {5, 6, 7, 8, 9};
-             weapon_text_id = weapon_text_ids[0];
-           };
 
     float x, y; // position
     Texture texture; //texture to put gun for instance
@@ -51,11 +34,25 @@ class Player {
     float reloadTime;
     float speed;
     int life;
-    const float distShoot = 8.0; //in wall size 16 usually
-    const size_t weapongDmgs = 25; //dmgs the weapon can make with 1 shoot to the monsters
-    int weapon_text_id;
-    std::vector<int> weapon_text_ids;
 
+    // weapons parameters
+    struct Weapon {
+      float distShoot; //in wall size 16 usually
+      size_t weapongDmgs; //dmgs the weapon can make with 1 shoot to the monsters
+      std::vector<int> weapon_text_ids;
+      int weapon_text_id;
+
+      Weapon(const float distShoot_in,const size_t weapongDmgs_in,const std::vector<int> weapon_text_ids_in):
+             distShoot(distShoot_in),weapongDmgs(weapongDmgs_in),weapon_text_ids(weapon_text_ids_in){
+               weapon_text_id = weapon_text_ids[0];
+      }
+    };
+    Weapon currentWeapon; //needs to be initalized
+    std::map<std::string, Weapon> animationWeaponsMap; //map that contains the animations vector depending on the weapon (the key)
+    std::map<std::string, Weapon>::iterator animationWeaponsMapIterator;
+    std::string weaponName = "gun";
+
+    //weapon animation parameters
     bool animationFinished = true;
     std::chrono::duration<double,  std::ratio<1>> timeDurationCurrentAnime_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> timeStartedAnime_secs = std::chrono::high_resolution_clock::now();

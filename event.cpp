@@ -35,6 +35,11 @@ bool Event::processEvent(std::chrono::time_point<std::chrono::high_resolution_cl
           {
             if (m_shootAgain) {m_player.fire = 1; m_shootAgain = false;} //shoot only if we have reloaded
           }
+          //setting gun
+          if ('1'==m_event.key.keysym.sym) m_player.weaponName = "knife";
+          if ('2'==m_event.key.keysym.sym) m_player.weaponName = "gun";
+          if ('3'==m_event.key.keysym.sym) m_player.weaponName = "rifle";
+          if ('4'==m_event.key.keysym.sym) m_player.weaponName = "machinegun";
       }
   }
 

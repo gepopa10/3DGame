@@ -33,7 +33,7 @@ struct Guard : MonsterAnimated {
     // std::map<float, DirectionAnimation>::iterator animationDirectionMapIterator;
     // std::vector<double> tex_ids_east;
 
-    std::map<float, std::vector<int>> animationDirectionMap; //map that contains the animationDirection depending on the direction (the key)
+    std::map<float, std::vector<int>> animationDirectionMap; //map that contains the animations vector depending on the direction (the key)
     std::map<float, std::vector<int>>::iterator animationDirectionMapIterator;
     std::vector<int> tex_ids_check;
 

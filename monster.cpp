@@ -66,9 +66,9 @@ void Monster::attacked(const Map &map, const Player &player){
         if (!map.is_empty(x, y)){
           float dist = std::sqrt(pow(player.x - x, 2) + pow(player.y - y, 2)); ///dist to wall in map size (16)
           if (player_dist < fabs(dist) //check if the monsters is not behind a wall
-              && player_dist < player.distShoot //check if the monster is close enough to be shoot
+              && player_dist < player.currentWeapon.distShoot //check if the monster is close enough to be shoot
               && aimed){ //check if we aimed at monster (is set in draw_sprite in render)
-            life -= player.weapongDmgs;
+            life -= player.currentWeapon.weapongDmgs;
           }
           break;
         }
