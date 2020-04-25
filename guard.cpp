@@ -89,6 +89,7 @@ void Guard::updatePosition(const Map &map, const Player &player, const double el
 }
 
 void Guard::action(const Map &map, Player &player, const double elapsed){
+  if (firstMotion) {timeStartedAnime_secs = std::chrono::high_resolution_clock::now(); firstMotion = false;}
   animateMonster();
   switch(state) {
     case attack_state:

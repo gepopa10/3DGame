@@ -16,11 +16,15 @@ int main() {
     Texture death_knight = Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3);        // textures for the monsters
     Texture static_monsters = Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888, 4, 1);
     Texture ss_guard = Texture("../ss.png", SDL_PIXELFORMAT_ABGR8888, 8, 7);
+    Texture guard = Texture("../guard.png", SDL_PIXELFORMAT_ABGR8888, 8, 7);
+    Texture weapons = Texture("../weapons.png", SDL_PIXELFORMAT_ABGR8888, 5, 4);
+    Texture objects = Texture("../objects.png", SDL_PIXELFORMAT_ABGR8888, 5, 10);
 
     GameState gs{ Map(),                                                                                             // game map
-                  {1.456, 1.345, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                                          // player
-                  {std::make_shared<Guard>(1.523, 8.812, ss_guard, 3, 0, 0.6, 0, 0, 100)},
-                   Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)      };                                // textures for the walls
+                  {1.456, 1.345, weapons, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                                          // player
+                  {std::make_shared<Guard>(1.523, 8.812, guard, 3, 0, 0.6, 0, 0, 100),
+                   std::make_shared<Sprite>(1.523, 3.812, objects, 4)},
+                   Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)};                                // textures for the walls
 
        // GameState gs{ Map(),                                                            // game map
        //               {1.456, 1.345, 0.523, M_PI/3., 0, 0, 0, 0.5, 1, 100},             // player

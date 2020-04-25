@@ -9,6 +9,7 @@ struct MonsterAnimated : Monster {
     float distanceSameDirection; //travel in same direction count
     const int distanceWall = 1; //has to keep this position from a wall
     const float maxDistanceSameDirection = 3; //max distance monster can travel in same direction
+    bool firstMotion = true; //to start timer at the very first motion
 
     // using Monster::Monster; //inheriting constructor
     MonsterAnimated(float x_in,
@@ -22,7 +23,7 @@ struct MonsterAnimated : Monster {
                     int life_in = 0);
 
     virtual uint8_t changeColorLife(const uint8_t r) override {return r;};
-    
+
 };
 
 #endif // MONSTERANIMATED_H

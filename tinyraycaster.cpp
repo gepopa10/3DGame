@@ -35,34 +35,6 @@ void draw_map(FrameBuffer &fb, const std::vector<std::shared_ptr<Sprite>> sprite
     }
 }
 
-void draw_visor(FrameBuffer &fb) {
-  // params of the players visor
-  size_t visorWidth = 16; //in pixels
-  size_t visorHeight = 16;
-  size_t visorThickness = 2;
-  size_t centerEmpty = 4;
-  uint32_t visorColor = pack_color(255, 0, 0); //color of the visor
-
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorWidth/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 + centerEmpty/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 - visorHeight/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
-}
-
-void draw_lifeJauge(FrameBuffer &fb, const GameState &gs) {
-  // params of the players visor
-  size_t lengthfull = 100; //in pixels
-  size_t height = 30;
-  size_t x = fb.w - 10 - lengthfull;
-  size_t y = fb.h - 10 - height;
-
-  uint32_t emptyColor = pack_color(0, 0, 0); //color of the empty life gauge
-  uint32_t fullColor = pack_color(255, 0, 0); //color of the full life gauge
-
-  fb.draw_rectangle(x, y, lengthfull*gs.player.life/100.0, height, fullColor);
-  fb.draw_rectangle(x + lengthfull*gs.player.life/100.0, y, lengthfull - lengthfull*gs.player.life/100.0, height, emptyColor);
-}
-
 void GameState::update(const double elapsed) {
 
   //updating the position of player and monsters
@@ -103,7 +75,7 @@ void GameState::update(const double elapsed) {
 
 void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struct
     const Map &map                                      = gs.map;
-    const Player &player                                = gs.player;
+    Player &player                                      = gs.player;
     const std::vector<std::shared_ptr<Sprite>> sprites  = gs.sprites;
     const Texture &tex_walls                            = gs.tex_walls;
 
@@ -146,6 +118,6 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
         sprites[i]->draw_sprite(fb, depth_buffer, player);
     }
 
-    draw_visor(fb);
-    draw_lifeJauge(fb, gs);
+    player.render(fb);
+
 }

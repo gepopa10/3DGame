@@ -32,6 +32,12 @@ Texture::Texture(const std::string filename, const uint32_t format, const int co
             uint8_t g = pixmap[(i+j*w)*4+1];
             uint8_t b = pixmap[(i+j*w)*4+2];
             uint8_t a = pixmap[(i+j*w)*4+3];
+            //remove the purple and setting it to transparent as well as white (some textures files have this)
+            if (r == 152 && g == 0 && b == 136)
+              a = 0;
+            if (r == 255 && g == 255 && b == 255)
+              a = 0;
+              
             img[i+j*w] = pack_color(r, g, b, a);
         }
     }
