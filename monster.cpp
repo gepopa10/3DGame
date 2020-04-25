@@ -92,6 +92,7 @@ void Monster::checkandUpdateState(const Map &map, const Player &player){
 
 void Monster::updatePosition(const Map &map, const Player &player, const double elapsed){
   //update position of the monster based on his set direction
+  removePeriods(direction);
   float nx_sprite = x - cos(direction)*elapsed*speed;
   float ny_sprite = y - sin(direction)*elapsed*speed;
 
@@ -134,4 +135,9 @@ void Monster::manageDead(std::shared_ptr<Sprite> &sprite){
 
 uint8_t Monster::changeColorLife(const uint8_t r){
   return (r-255)*life/100.0 + 255; //linear function
+}
+
+void Monster::removePeriods(float &angle_in){
+  while (angle_in >  2*M_PI) angle_in -= 2*M_PI; // remove unncesessary periods from the relative direction
+  while (angle_in <  -2*M_PI) angle_in += 2*M_PI;
 }

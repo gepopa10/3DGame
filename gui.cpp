@@ -14,11 +14,12 @@ int main() {
     FrameBuffer fb{1024, 512, std::vector<uint32_t>(1024*512, pack_color(255, 255, 255))};
 
     Texture death_knight = Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3);        // textures for the monsters
-    Texture static_monsters = Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888, 4, 1);         // textures for the monsters
+    Texture static_monsters = Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888, 4, 1);
+    Texture ss_guard = Texture("../ss.png", SDL_PIXELFORMAT_ABGR8888, 8, 7);
 
     GameState gs{ Map(),                                                                                             // game map
                   {1.456, 1.345, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                                          // player
-                  {std::make_shared<MonsterAnimated>(1.523, 10.812, death_knight, 3, 0, 0.3, 0, 0, 100)},
+                  {std::make_shared<Guard>(1.523, 8.812, ss_guard, 3, 0, 0.6, 0, 0, 100)},
                    Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)      };                                // textures for the walls
 
        // GameState gs{ Map(),                                                            // game map

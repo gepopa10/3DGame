@@ -14,6 +14,8 @@
 #include "sprite.h"
 #include "monster.h"
 #include "monsteranimated.h"
+#include "boss.h"
+#include "guard.h"
 #include "framebuffer.h"
 #include "textures.h"
 
