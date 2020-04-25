@@ -29,7 +29,7 @@ struct Monster : Sprite {
             float player_dist_in = 10000,
             float direction_in = 0,
             bool aimed_in = 0,
-            int life_in = 0);
+            int life_in = 100);
 
     virtual void draw_sprite(FrameBuffer &fb,
                              const std::vector<float> &depth_buffer,

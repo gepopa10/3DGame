@@ -1,14 +1,10 @@
-#ifndef BOSS_H
-#define BOSS_H
+#ifndef HITLER_H
+#define HITLER_H
 
-#include "monsteranimated.h"
-#include <math.h>
+#include "boss.h"
 
-struct Boss : MonsterAnimated {
+struct Hitler : Boss {
 
-    // MonsterAnimated seems to inherite the States enum this from Monster
-    // typedef enum {randomWalk_state, attack_state, dead_state} States; //state in which the animated monster is
-    // States state = randomWalk_state;
     typedef enum {check, move, shoot, die, stay} Animations; //animation texture in which the animated monster is
     Animations animation = check;
     bool animationFinished = true;
@@ -25,15 +21,15 @@ struct Boss : MonsterAnimated {
     const float timeAttackMonster = 3; //minimum time before monster can reattack
 
     // using Monster::Monster; //inheriting constructor
-    Boss(float x_in,
-         float y_in,
-         Texture texture_in,
-         size_t tex_id_in = 0,
-         float speed_in = 0,
-         float player_dist_in = 10000,
-         float direction_in = 0,
-         bool aimed_in = 0,
-         int life_in = 100);
+    Hitler(float x_in,
+           float y_in,
+           Texture texture_in,
+           size_t tex_id_in = 0,
+           float speed_in = 0,
+           float player_dist_in = 10000,
+           float direction_in = 0,
+           bool aimed_in = 0,
+           int life_in = 100);
 
     virtual void updatePosition(const Map &map, const Player &player, const double elapsed) override;
     virtual void action(const Map &map, Player &player, const double elapsed) override;
@@ -44,4 +40,4 @@ struct Boss : MonsterAnimated {
 
 };
 
-#endif // BOSS_H
+#endif // HITLER_H

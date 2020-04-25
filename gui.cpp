@@ -19,11 +19,12 @@ int main() {
     Texture guard = Texture("../guard.png", SDL_PIXELFORMAT_ABGR8888, 8, 7);
     Texture weapons = Texture("../weapons.png", SDL_PIXELFORMAT_ABGR8888, 5, 4);
     Texture objects = Texture("../objects.png", SDL_PIXELFORMAT_ABGR8888, 5, 10);
+    Texture hitler = Texture("../hitler.png", SDL_PIXELFORMAT_ABGR8888, 7, 6);
 
     GameState gs{ Map(),                                                                                             // game map
                   {1.456, 1.345, weapons, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                                          // player
                   {std::make_shared<Guard>(1.523, 8.812, guard, 3, 0, 0.6, 0, 0, 100),
-                   std::make_shared<Sprite>(1.523, 3.812, objects, 4)},
+                   std::make_shared<Hitler>(1.523, 8.812, hitler)},
                    Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)};                                // textures for the walls
 
        // GameState gs{ Map(),                                                            // game map

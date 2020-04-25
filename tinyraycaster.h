@@ -16,6 +16,7 @@
 #include "monsteranimated.h"
 #include "boss.h"
 #include "guard.h"
+#include "hitler.h"
 #include "framebuffer.h"
 #include "textures.h"
 

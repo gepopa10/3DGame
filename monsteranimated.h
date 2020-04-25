@@ -20,7 +20,7 @@ struct MonsterAnimated : Monster {
                     float player_dist_in = 10000,
                     float direction_in = 0,
                     bool aimed_in = 0,
-                    int life_in = 0);
+                    int life_in = 100);
 
     virtual uint8_t changeColorLife(const uint8_t r) override {return r;};
 
