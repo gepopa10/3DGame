@@ -11,7 +11,7 @@
 
 int main() {
 
-    FrameBuffer fb{1024, 512, std::vector<uint32_t>(1024*512, pack_color(255, 255, 255))};
+    FrameBuffer fb{768, 608, std::vector<uint32_t>(768*608, pack_color(255, 255, 255))};
 
     Texture death_knight = Texture("../death_knight.png", SDL_PIXELFORMAT_ABGR8888, 4, 3);        // textures for the monsters
     Texture static_monsters = Texture("../monsters.bmp", SDL_PIXELFORMAT_ABGR8888, 4, 1);
@@ -43,7 +43,7 @@ int main() {
     }
 
     Window guiWindow(fb, gs);
-    Event eventHandler(gs.player);
+    Event eventHandler(gs);
 
     auto t1 = std::chrono::high_resolution_clock::now();
     auto t1_reload = std::chrono::high_resolution_clock::now();

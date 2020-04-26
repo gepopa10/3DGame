@@ -7,17 +7,17 @@
 
 #include "SDL.h"
 
-#include "player.h"
+#include "tinyraycaster.h"
 
 class Event
 {
   public:
-    Event(Player& player_in);
+    Event(GameState& gs_in);
     ~Event();
     bool processEvent(std::chrono::time_point<std::chrono::high_resolution_clock>& t1,
                       const std::chrono::time_point<std::chrono::high_resolution_clock>& t2);
   protected:
-    Player& m_player;
+    GameState& m_gs;
     SDL_Event m_event;
     bool b_m_quit;
     bool m_shootAgain;

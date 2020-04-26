@@ -85,16 +85,15 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
 
     fb.clear(pack_color(255, 255, 255)); // clear the screen
 
-    const size_t cell_w = fb.w/(map.w*2); // size of one map cell on the screen
+    const size_t cell_w = fb.w/(map.w); // size of one map cell on the screen
     const size_t cell_h = fb.h/map.h;
-    std::vector<float> depth_buffer(fb.w/2, 1e3);
+    std::vector<float> depth_buffer(fb.w, 1e3);
 
-    for (size_t i=0; i<fb.w/2; i++) { // draw the visibility cone AND the "3D" view
-        float angle = player.a-player.fov/2 + player.fov*i/float(fb.w/2);
+    for (size_t i=0; i<fb.w; i++) { // draw the "3D" view
+        float angle = player.a-player.fov/2 + player.fov*i/float(fb.w);
         for (float t=0; t<20; t+=.01) { // ray marching loop
             float x = player.x + t*cos(angle);
             float y = player.y + t*sin(angle);
-            fb.set_pixel(x*cell_w, y*cell_h, pack_color(190, 190, 190)); // this draws the visibility cone
 
             if (map.is_empty(x, y)) continue;
 
@@ -105,7 +104,7 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
             size_t column_height = std::min(2000, int(fb.h/dist));
             int x_texcoord = wall_x_texcoord(x, y, tex_walls);
             std::vector<uint32_t> column = tex_walls.get_scaled_column(texid, x_texcoord, column_height);
-            int pix_x = i + fb.w/2; // we are drawing at the right half of the screen, thus +fb.w/2
+            int pix_x = i ;
             for (size_t j=0; j<column_height; j++) { // copy the texture column to the framebuffer
                 int pix_y = j + fb.h/2 - column_height/2;
                 if (pix_y>=0 && pix_y<(int)fb.h) {
@@ -113,10 +112,8 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
                 }
             }
             break;
-        } // ray marching loop
+        }
     } // field of view ray sweeping
-
-    draw_map(fb, sprites, tex_walls, map, cell_w, cell_h);
 
     for (size_t i=0; i<sprites.size(); i++) { // draw the sprites
         sprites[i]->draw_sprite(fb, depth_buffer, player);
@@ -124,4 +121,21 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
 
     player.render(fb);
 
+    //we clear the screen and draw only the map if in map mode is active
+    if (gs.mapModeActive){
+      fb.clear(pack_color(255, 255, 255)); // clear the screen
+      for (size_t i=0; i<fb.w; i++) { // draw the visibility cone
+          float angle = player.a-player.fov/2 + player.fov*i/float(fb.w);
+          for (float t=0; t<10; t+=.01) { // ray marching loop
+              float x = player.x + t*cos(angle);
+              float y = player.y + t*sin(angle);
+
+              fb.set_pixel(x*cell_w, y*cell_h, pack_color(190, 190, 190)); // this draws the visibility cone
+
+              if (map.is_empty(x, y)) continue;
+              break;
+            }
+        }
+      draw_map(fb, sprites, tex_walls, map, cell_w, cell_h);
+    }
 }

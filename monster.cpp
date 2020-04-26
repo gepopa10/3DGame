@@ -29,12 +29,12 @@ void Monster::draw_sprite(FrameBuffer &fb,
     while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
 
     size_t sprite_screen_size = std::min(2000, static_cast<int>(fb.h/player_dist)); // screen sprite size
-    int h_offset = (sprite_dir - player.a)*(fb.w/2)/(player.fov) + (fb.w/2)/2 - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
+    int h_offset = (sprite_dir - player.a)*(fb.w)/(player.fov) + (fb.w/2) - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
     aimed = false;
     for (size_t i=0; i<sprite_screen_size; i++) {
-        if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
+        if (h_offset+int(i)<0 || h_offset+i>=fb.w) continue;
         if (depth_buffer[h_offset+i]<player_dist) continue; // this sprite column is occluded
         for (size_t j=0; j<sprite_screen_size; j++) {
             if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
@@ -43,9 +43,9 @@ void Monster::draw_sprite(FrameBuffer &fb,
             unpack_color(color, r, g, b, a);
             if (a>128){
               uint32_t color = pack_color(changeColorLife(r), g, b); //change the color of the sprite depending on his life
-              fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+              fb.set_pixel( h_offset+i, v_offset+j, color);
             }
-            if (fb.w/2 + h_offset+i == fb.w/2 + fb.w/4) aimed = true; //if a single pixel of the sprite is in the center of the view we aimed it
+            if ( h_offset+i == fb.w/2 ) aimed = true; //if a single pixel of the sprite is in the center of the view we aimed it
         }
     }
 }

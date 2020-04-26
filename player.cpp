@@ -44,10 +44,10 @@ void Player::drawVisor(FrameBuffer &fb) {
   size_t centerEmpty = 4;
   uint32_t visorColor = pack_color(255, 0, 0); //color of the visor
 
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorWidth/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 + centerEmpty/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 - visorHeight/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
-  fb.draw_rectangle(fb.w/2 + fb.w/4 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
+  fb.draw_rectangle(fb.w/2 - visorWidth/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
+  fb.draw_rectangle(fb.w/2 + centerEmpty/2, fb.h/2 - visorThickness/2, visorWidth/2 - centerEmpty/2, visorThickness, visorColor);
+  fb.draw_rectangle(fb.w/2 - visorThickness/2, fb.h/2 - visorHeight/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
+  fb.draw_rectangle(fb.w/2 - visorThickness/2, fb.h/2 + centerEmpty/2, visorThickness, visorHeight/2 -centerEmpty/2, visorColor);
 }
 
 void Player::drawLifeJauge(FrameBuffer &fb) {
@@ -76,18 +76,18 @@ void Player::drawWeapon(FrameBuffer &fb) {
 
     //parameters to put weapon in the middle
     size_t screen_size = 400;
-    int h_offset = 45;
-    int v_offset = 130;
+    int h_offset = 180;
+    int v_offset = 220;
 
     for (size_t i=0; i<screen_size; i++) {
-        if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
+        if (h_offset+int(i)<0 || h_offset+i>=fb.w) continue;
         for (size_t j=0; j<screen_size; j++) {
             if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
             uint32_t color = texture.get(i*texture.size_x/screen_size, j*texture.size_y/screen_size, currentWeapon.weapon_text_id);
             uint8_t r,g,b,a;
             unpack_color(color, r, g, b, a);
             if (a>128){
-              fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+              fb.set_pixel(h_offset+i, v_offset+j, color);
             }
           }
     }

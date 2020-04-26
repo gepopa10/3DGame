@@ -57,9 +57,11 @@ void Window::display(){
 
   //apply frambuffer
   SDL_RenderCopy(m_renderer, m_framebuffer_texture, NULL, NULL);
-  //apply fonts on top
-  for (auto& ite_m_fonts : m_fonts) {
-    ite_m_fonts->render(m_renderer);
+  //apply fonts on top only if not in map mode!
+  if (!m_gs.mapModeActive){
+    for (auto& ite_m_fonts : m_fonts) {
+      ite_m_fonts->render(m_renderer);
+    }
   }
   //render to window
   SDL_RenderPresent(m_renderer);

@@ -23,11 +23,11 @@ void Sprite::draw_sprite(FrameBuffer &fb,
     while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
 
     size_t sprite_screen_size = std::min(2000, static_cast<int>(fb.h/player_dist)); // screen sprite size
-    int h_offset = (sprite_dir - player.a)*(fb.w/2)/(player.fov) + (fb.w/2)/2 - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
+    int h_offset = (sprite_dir - player.a)*(fb.w)/(player.fov) + (fb.w/2) - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
     int v_offset = fb.h/2 - sprite_screen_size/2;
 
     for (size_t i=0; i<sprite_screen_size; i++) {
-        if (h_offset+int(i)<0 || h_offset+i>=fb.w/2) continue;
+        if (h_offset+int(i)<0 || h_offset+i>=fb.w) continue;
         if (depth_buffer[h_offset+i]<player_dist) continue; // this sprite column is occluded
         for (size_t j=0; j<sprite_screen_size; j++) {
             if (v_offset+int(j)<0 || v_offset+j>=fb.h) continue;
@@ -35,7 +35,7 @@ void Sprite::draw_sprite(FrameBuffer &fb,
             uint8_t r,g,b,a;
             unpack_color(color, r, g, b, a);
             if (a>128){
-              fb.set_pixel(fb.w/2 + h_offset+i, v_offset+j, color);
+              fb.set_pixel( h_offset+i, v_offset+j, color);
             }
           }
     }
