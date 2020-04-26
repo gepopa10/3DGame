@@ -13,7 +13,7 @@ struct Monster : Sprite {
 
     bool sayMsg = false;
     bool notfirstAttack = true;
-    char* msgToSay = "kill";
+    char* msgToSay = "Mouhahaha"; //"Mouhahaha"
     std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
     std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;

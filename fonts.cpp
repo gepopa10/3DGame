@@ -4,7 +4,8 @@ Font::Font(const std::vector<int>& location_in,
            const int& text_in_int,
            const char*& dummy,
            const std::vector<int>& color_in,
-           const int& size_in) :
+           const int& size_in,
+           const char* path_font) :
            m_location(location_in),
            m_text_int(text_in_int),
            m_text(dummy),
@@ -19,7 +20,7 @@ Font::Font(const std::vector<int>& location_in,
     exit(2);
   }
 
-  m_font = TTF_OpenFont("../pixelz.ttf", m_size);
+  m_font = TTF_OpenFont(path_font, m_size);
   m_colorSDL = { m_color[0], m_color[1], m_color[2], m_color[3] };
 
 }
@@ -27,7 +28,8 @@ Font::Font(const std::vector<int>& location_in,
 Font::Font(const std::vector<int>& location_in,
            const char*& text_in,
            const std::vector<int>& color_in,
-           const int& size_in) :
+           const int& size_in,
+           const char* path_font) :
            m_location(location_in),
            m_text(text_in),
            m_text_int(size_in),
@@ -42,7 +44,7 @@ Font::Font(const std::vector<int>& location_in,
     exit(2);
   }
 
-  m_font = TTF_OpenFont("../pixelz.ttf", m_size);
+  m_font = TTF_OpenFont(path_font, m_size);
   m_colorSDL = { m_color[0], m_color[1], m_color[2], m_color[3] };
 
 }
@@ -69,7 +71,7 @@ void Font::render(SDL_Renderer* renderer_in){
   int posx = m_location[0];
   int posy = m_location[1];
   SDL_QueryTexture(m_texture, NULL, NULL, &texW, &texH);
-  SDL_Rect dstrect = { posx, posy, texW, texH };
+  SDL_Rect dstrect = { posx-texW/2, posy-texH/2, texW, texH }; //-texW/2 so location specify the middle of the text
 
   SDL_RenderCopy(renderer_in, m_texture, NULL, &dstrect);
 

@@ -19,12 +19,14 @@ class Font
          const int& text_in_int,
          const char*& dummy, //needed to initialize m_text
          const std::vector<int>& color_in = { 0, 0, 0, 255 },
-         const int& size_in = 25);
+         const int& size_in = 25,
+         const char* path_font = "../pixelz.ttf");
     //constructor with a char pointer (text)
     Font(const std::vector<int>& location_in,
          const char*& text_in,
          const std::vector<int>& color_in = { 0, 0, 0, 255 },
-         const int& size_in = 25);
+         const int& size_in = 25,
+         const char* path_font = "../pixelz.ttf");
 
     ~Font();
     void render(SDL_Renderer* renderer_in);

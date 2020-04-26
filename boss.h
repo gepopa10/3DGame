@@ -26,7 +26,7 @@ struct Boss : MonsterAnimated {
 
     bool sayMsg = false;
     bool notfirstAttack = true;
-    char* msgToSay = "boss";
+    char* msgToSay = "Guten Tag"; //"Guten Tag"
     std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
     std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;

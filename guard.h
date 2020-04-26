@@ -31,7 +31,7 @@ struct Guard : MonsterAnimated {
 
     bool sayMsg = false;
     bool notfirstAttack = true;
-    char* msgToSay = "guard";
+    char* msgToSay = "Heil Hitler!"; //"Heil Hitler!"
     std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
     std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;
