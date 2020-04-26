@@ -13,7 +13,9 @@ Monster::Monster(float x_in,
                  speed(speed_in),
                  direction(direction_in),
                  aimed(aimed_in),
-                 life(life_in){
+                 life(life_in),
+                 msgTime_secs(0),
+                 msgTimeLimit_secs(5){
 
 }
 
@@ -120,6 +122,9 @@ void Monster::action(const Map &map, Player &player, const double elapsed){
 
 void Monster::attack(const Map &map, Player &player, const double elapsed){
   updatePosition(map, player, elapsed);
+  // says msg first time it enters here
+  if (notfirstAttack) {sayMsg = true; notfirstAttack = false; firstMsg_secs = std::chrono::high_resolution_clock::now();}
+
   speed = 0.8; //increase speed if in proximity
   //enable monster to attack player
   timefromLastAttack_secs =  std::chrono::high_resolution_clock::now() - timeatLastAttack_secs; //time from last attack

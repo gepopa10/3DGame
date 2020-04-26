@@ -10,6 +10,14 @@ struct Monster : Sprite {
     float direction;
     bool aimed;
     int life;
+
+    bool sayMsg = false;
+    bool notfirstAttack = true;
+    char* msgToSay = "kill";
+    std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
+    std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
+    std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;
+
     std::chrono::duration<double,  std::ratio<1>> timefromLastAttack_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> timeatLastAttack_secs = std::chrono::high_resolution_clock::now();
 
@@ -25,8 +33,8 @@ struct Monster : Sprite {
             float y_in,
             Texture texture_in,
             size_t tex_id_in = 0,
-            float speed_in = 0,
             float player_dist_in = 10000,
+            float speed_in = 0.5,
             float direction_in = 0,
             bool aimed_in = 0,
             int life_in = 100);
@@ -44,6 +52,15 @@ struct Monster : Sprite {
     virtual void manageDead(std::shared_ptr<Sprite> &sprite);
     virtual uint8_t changeColorLife(const uint8_t r);
     virtual void removePeriods(float &angle_in);
+    virtual char* msg() {
+      msgTime_secs = std::chrono::high_resolution_clock::now() - firstMsg_secs;
+      if (msgTime_secs > msgTimeLimit_secs) sayMsg = false;
+
+      if (sayMsg)
+        return msgToSay;
+      else
+        return "";
+    };
 
 };
 

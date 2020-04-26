@@ -42,6 +42,7 @@ void GameState::update(const double elapsed) {
   float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
   float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed;
 
+  bool oneMsgSaid = false;
   //check if the map is empty at the new position before updating
   if (int(nx)>=0 && int(nx)<int(map.w) && int(ny)>=0 && int(ny)<int(map.h)) {
       if (map.is_empty(nx, player.y)) player.x = nx;
@@ -54,13 +55,16 @@ void GameState::update(const double elapsed) {
 
     //dealing with movable monsters
     std::shared_ptr<Monster> maybeMonster = std::dynamic_pointer_cast<Monster>(sprite); //we use dynamic_pointer_cast because Monster is a shared_ptr
-    if (maybeMonster != nullptr) // Cast succeeded, the sprite is a monster
-    {
+    if (maybeMonster != nullptr){ // Cast succeeded, the sprite is a monster
         maybeMonster->update(map, player, elapsed); // make the monsters advance in the players direction and other update
         //set the pointer to null if the monster is dead so it gets erased after
         if (maybeMonster->life <= 0) {maybeMonster->state = Monster::dead_state; maybeMonster->manageDead(sprite);}
+        //we set the msg and said that at least one mob said a msg so dont put empty msg.
+        if (strcmp(maybeMonster->msg(),"")) {oneMsgSaid=true; gameplayMessage = maybeMonster->msg();}
     }
   }
+
+  if(!oneMsgSaid) {gameplayMessage = ""; oneMsgSaid = false;} //resetting only if no mob is saying anything, helps to not override other mobs msgs
 
   sprites.erase(std::remove(begin(sprites), end(sprites), nullptr), end(sprites)); //remove pointers in vector that are null (dead monsters)
 

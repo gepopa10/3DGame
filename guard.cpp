@@ -17,7 +17,9 @@ Guard::Guard(float x_in,
                              speed_in,
                              direction_in,
                              aimed_in,
-                             life_in){
+                             life_in),
+             msgTime_secs(0),
+             msgTimeLimit_secs(5){
 
   std::chrono::duration<double,  std::ratio<1>> d_check(0.3);
   std::chrono::duration<double,  std::ratio<1>> d_dead(0.4);
@@ -69,12 +71,14 @@ void Guard::updatePosition(const Map &map, const Player &player, const double el
 
 
       } else {//hitting a wall or change direction because too much in same direction
-        // if (((fmod(direction,M_PI/4.0)-floor(fmod(direction,M_PI/4.0))) > 0.7)) {
-        //   direction = directionIni;
-        // } //we reset the direction that was changed by attack_mode
+        if (((fmod(direction,M_PI/4.0)-floor(fmod(direction,M_PI/4.0))) > 0.7)) {
+          direction = directionIni;
+        } //we reset the direction that was changed by attack_mode
+
         direction += M_PI/4.0; //opposite direction
         distanceSameDirection = 0;
       }
+
   }
 
   // animationDirection setting
@@ -106,6 +110,8 @@ void Guard::action(const Map &map, Player &player, const double elapsed){
 }
 
 void Guard::attack(const Map &map, Player &player, const double elapsed){
+  //setting sayMsg to true on the first enter of attack and starting timer
+  if (notfirstAttack) {sayMsg = true; notfirstAttack = false; firstMsg_secs = std::chrono::high_resolution_clock::now();}
 
   speed = 0.8; //increase speed if in proximity
   //enable monster to attack player
@@ -117,7 +123,6 @@ void Guard::attack(const Map &map, Player &player, const double elapsed){
     timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
   } else if (animationFinished){
     animation = move;
-    // updatePosition(map, player, elapsed);
     if (player_dist <= proximityToPlayer) {animation = stay; timeStartedAnime_secs = std::chrono::high_resolution_clock::now();}
   }
   if (animation == move) updatePosition(map, player, elapsed);

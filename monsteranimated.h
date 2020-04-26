@@ -16,8 +16,8 @@ struct MonsterAnimated : Monster {
                     float y_in,
                     Texture texture_in,
                     size_t tex_id_in = 0,
-                    float speed_in = 0,
                     float player_dist_in = 10000,
+                    float speed_in = 0.5,
                     float direction_in = 0,
                     bool aimed_in = 0,
                     int life_in = 100);

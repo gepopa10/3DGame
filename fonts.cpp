@@ -2,10 +2,12 @@
 
 Font::Font(const std::vector<int>& location_in,
            const int& text_in_int,
+           const char*& dummy,
            const std::vector<int>& color_in,
            const int& size_in) :
            m_location(location_in),
            m_text_int(text_in_int),
+           m_text(dummy),
            m_color(color_in),
            m_size(size_in),
            m_font(nullptr),
@@ -23,7 +25,7 @@ Font::Font(const std::vector<int>& location_in,
 }
 
 Font::Font(const std::vector<int>& location_in,
-           const char* text_in,
+           const char*& text_in,
            const std::vector<int>& color_in,
            const int& size_in) :
            m_location(location_in),

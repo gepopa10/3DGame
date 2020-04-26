@@ -1,10 +1,10 @@
 #include "window.h"
 
 Window::Window(FrameBuffer& fb_in, GameState& gs_in) : m_fb(fb_in),
-                                       m_gs(gs_in),
-                                     m_window(nullptr),
-                                     m_renderer(nullptr),
-                                     m_framebuffer_texture(nullptr){
+                                                       m_gs(gs_in),
+                                                       m_window(nullptr),
+                                                       m_renderer(nullptr),
+                                                       m_framebuffer_texture(nullptr){
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
       std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
       //return -1;
@@ -22,14 +22,15 @@ Window::Window(FrameBuffer& fb_in, GameState& gs_in) : m_fb(fb_in),
   }
 
   //setting fonts
+
   //game name
   m_fonts.push_back(std::make_shared<Font>(std::vector<int> {m_fb.w/2, 10},                  //location
-                                           "Tinyraycaster",                                  //text (const *char or int reference)
+                                           m_gs.gameplayMessage,                             //text (const *char or int reference)
                                            std::vector<int> {0, 0, 0, 255},                  //color
                                            50));                                             //size
   //life jauge
   m_fonts.push_back(std::make_shared<Font>(std::vector<int> {m_fb.w -10-100, m_fb.h-10-30},
-                                           m_gs.player.life,
+                                           m_gs.player.life, m_gs.gameplayMessage,
                                            std::vector<int> {255, 255, 255, 255},
                                            30));
 }

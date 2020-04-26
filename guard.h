@@ -29,9 +29,12 @@ struct Guard : MonsterAnimated {
     const float timeAttackMonster = 1; //minimum time before monster can reattack
     const int dmgMonsterAttack = 5; //dmg a monster can do to player if he is closer than distanceMonsterAttack
 
-    // std::map<float, DirectionAnimation> animationDirectionMap; //map that contains the animationDirection depending on the direction (the key)
-    // std::map<float, DirectionAnimation>::iterator animationDirectionMapIterator;
-    // std::vector<double> tex_ids_east;
+    bool sayMsg = false;
+    bool notfirstAttack = true;
+    char* msgToSay = "guard";
+    std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
+    std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
+    std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;
 
     std::map<float, std::vector<int>> animationDirectionMap; //map that contains the animations vector depending on the direction (the key)
     std::map<float, std::vector<int>>::iterator animationDirectionMapIterator;
@@ -42,11 +45,11 @@ struct Guard : MonsterAnimated {
           float y_in,
           Texture texture_in,
           size_t tex_id_in = 0,
-          float speed_in = 0,
           float player_dist_in = 10000,
+          float speed_in = 0.5,
           float direction_in = 0,
           bool aimed_in = 0,
-          int life_in = 0);
+          int life_in = 100);
 
     virtual void updatePosition(const Map &map, const Player &player, const double elapsed) override;
     virtual void action(const Map &map, Player &player, const double elapsed) override;
@@ -68,6 +71,17 @@ struct Guard : MonsterAnimated {
         auto dist_to_upper = upper_bound->first - key;
         return (dist_to_upper < dist_to_lower) ? upper_bound : lower_bound;
     }
+
+    virtual char* msg() override{
+
+      msgTime_secs = std::chrono::high_resolution_clock::now() - firstMsg_secs;
+      if (msgTime_secs > msgTimeLimit_secs) sayMsg = false;
+
+      if (sayMsg)
+        return msgToSay;
+      else
+        return "";
+    };
 
 };
 

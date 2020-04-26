@@ -26,6 +26,7 @@ struct Sprite {
     virtual void draw_sprite(FrameBuffer &fb,
                              const std::vector<float> &depth_buffer,
                              const Player &player);
+
 };
 
 #endif // SPRITE_H

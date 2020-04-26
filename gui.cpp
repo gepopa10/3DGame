@@ -23,8 +23,9 @@ int main() {
 
     GameState gs{ Map(),                                                                                             // game map
                   {1.456, 1.345, weapons, M_PI/2, M_PI/3., 0, 0, 0, 0.5, true ,100},                                          // player
-                  {std::make_shared<Guard>(1.523, 8.812, guard, 3, 0, 0.6, 0, 0, 100),
-                   std::make_shared<Hitler>(1.523, 8.812, hitler)},
+                  {std::make_shared<Monster>(1.523, 8.812, static_monsters, 3, 0, 0.6, 0, 0, 100),
+                   std::make_shared<Hitler>(1.523, 8.812, hitler),
+                   std::make_shared<Guard>(13.523, 2.812, ss_guard)},
                    Texture("../walltext.bmp", SDL_PIXELFORMAT_ABGR8888, 6, 1)};                                // textures for the walls
 
        // GameState gs{ Map(),                                                            // game map

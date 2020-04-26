@@ -20,6 +20,12 @@ struct Hitler : Boss {
     const float distanceMonsterAttack = 4.0; //if monster is closer to distanceMonsterAttack it can inflict damage to player
     const float timeAttackMonster = 3; //minimum time before monster can reattack
 
+    bool sayMsg = false;
+    bool notfirstAttack = true;
+    char* msgToSay = "hitler";
+    std::chrono::duration<double,  std::ratio<1>> msgTime_secs;
+    std::chrono::duration<double,  std::ratio<1>> msgTimeLimit_secs;
+    std::chrono::time_point<std::chrono::high_resolution_clock> firstMsg_secs;
     // using Monster::Monster; //inheriting constructor
     Hitler(float x_in,
            float y_in,
@@ -37,6 +43,17 @@ struct Hitler : Boss {
     virtual void animateMonster();
     virtual void checkandUpdateState(const Map &map, const Player &player) override; //just to change proximityAttackThreshold
     virtual void manageDead(std::shared_ptr<Sprite> &sprite) override;
+
+    virtual char* msg() override{
+
+      msgTime_secs = std::chrono::high_resolution_clock::now() - firstMsg_secs;
+      if (msgTime_secs > msgTimeLimit_secs) sayMsg = false;
+
+      if (sayMsg)
+        return msgToSay;
+      else
+        return "";
+    };
 
 };
 

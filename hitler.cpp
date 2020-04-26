@@ -17,7 +17,9 @@ Hitler::Hitler(float x_in,
                     speed_in,
                     direction_in,
                     aimed_in,
-                    life_in){
+                    life_in),
+                msgTime_secs(0),
+                msgTimeLimit_secs(5){
 
   std::chrono::duration<double,  std::ratio<1>> d_check(1);
   std::chrono::duration<double,  std::ratio<1>> d_move(0.5);
@@ -77,6 +79,8 @@ void Hitler::action(const Map &map, Player &player, const double elapsed){
 }
 
 void Hitler::attack(const Map &map, Player &player, const double elapsed){
+  //setting sayMsg to true on the first enter of attack and starting timer
+  if (notfirstAttack) {sayMsg = true; notfirstAttack = false; firstMsg_secs = std::chrono::high_resolution_clock::now();}
 
   speed = 0.3; //increase speed if in proximity
   //enable monster to attack player
@@ -88,7 +92,6 @@ void Hitler::attack(const Map &map, Player &player, const double elapsed){
     timeatLastAttack_secs = std::chrono::high_resolution_clock::now(); //reseting time at attack
   } else if (animationFinished){
     animation = move;
-    // updatePosition(map, player, elapsed);
     if (player_dist <= proximityToPlayer) {animation = stay; timeStartedAnime_secs = std::chrono::high_resolution_clock::now();}
   }
   if (animation == move) updatePosition(map, player, elapsed);

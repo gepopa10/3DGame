@@ -21,11 +21,17 @@
 #include "textures.h"
 
 struct GameState {
+    GameState(Map map_in, Player player_in, std::vector<std::shared_ptr<Sprite>> sprites_in, Texture tex_walls_in, const char* gameplayMessage_in = "Hello"):
+              map(map_in), player(player_in), sprites(sprites_in), tex_walls(tex_walls_in), gameplayMessage(gameplayMessage_in){};
+
+
     Map map;
     Player player;
     std::vector<std::shared_ptr<Sprite>> sprites;
     Texture tex_walls;
+    const char* gameplayMessage;
     void update(const double elapsed);
+
 };
 
 void render(FrameBuffer &fb, GameState &gs);
