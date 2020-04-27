@@ -24,7 +24,7 @@ struct Monster : Sprite {
     const float proximityAttackThreshold = 4.0; //If the player is closer than 4 mapcells from a monster it starts attacking
     const float proximityToPlayer = 0.5; //If the player is closer than 1 mapcells from a monster, the monster doesnt go further (to avoid entering in the player)
     const float distanceMonsterAttack = 1; //if monster is closer to distanceMonsterAttack it can inflict damage to player
-    const int dmgMonsterAttack = 10; //dmg a monster can do to player if he is closer than distanceMonsterAttack
+    const int dmgMonsterAttack = 2; //dmg a monster can do to player if he is closer than distanceMonsterAttack
     const float timeAttackMonster = 1; //minimum time before monster can reattack
     typedef enum {randomWalk_state, attack_state, dead_state} States; //state in which the monster is
     States state = randomWalk_state;

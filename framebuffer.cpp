@@ -23,3 +23,15 @@ void FrameBuffer::draw_rectangle(const size_t rect_x, const size_t rect_y, const
 void FrameBuffer::clear(const uint32_t color) {
     img = std::vector<uint32_t>(w*h, color);
 }
+
+void FrameBuffer::set_floor(const uint32_t color) {
+    assert(img.size()==w*h);
+    for (size_t i=0; i<w; i++) {
+        for (size_t j=h/2; j<h; j++) {
+            size_t cx = i;
+            size_t cy = j;
+            if (cx<w && cy<h) // no need to check for negative values (unsigned variables)
+                set_pixel(cx, cy, color);
+        }
+    }
+}

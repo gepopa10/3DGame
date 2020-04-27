@@ -39,8 +39,8 @@ void GameState::update(const double elapsed) {
 
   //updating the position of player and monsters
   player.a += float(player.turn)*elapsed;
-  float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed;
-  float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed;
+  float nx = player.x + player.walk*cos(player.a)*elapsed*player.speed*2;
+  float ny = player.y + player.walk*sin(player.a)*elapsed*player.speed*2;
 
   bool oneMsgSaid = false;
   //check if the map is empty at the new position before updating
@@ -83,7 +83,8 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
     const std::vector<std::shared_ptr<Sprite>> sprites  = gs.sprites;
     const Texture &tex_walls                            = gs.tex_walls;
 
-    fb.clear(pack_color(255, 255, 255)); // clear the screen
+    fb.clear(pack_color(40, 40, 40)); // clear the screen
+    fb.set_floor(pack_color(110, 110, 110)); // clear the screen
 
     const size_t cell_w = fb.w/(map.w); // size of one map cell on the screen
     const size_t cell_h = fb.h/map.h;
@@ -91,7 +92,7 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
 
     for (size_t i=0; i<fb.w; i++) { // draw the "3D" view
         float angle = player.a-player.fov/2 + player.fov*i/float(fb.w);
-        for (float t=0; t<20; t+=.01) { // ray marching loop
+        for (float t=0; t<50; t+=.01) { // ray marching loop
             float x = player.x + t*cos(angle);
             float y = player.y + t*sin(angle);
 
@@ -126,7 +127,7 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
       fb.clear(pack_color(255, 255, 255)); // clear the screen
       for (size_t i=0; i<fb.w; i++) { // draw the visibility cone
           float angle = player.a-player.fov/2 + player.fov*i/float(fb.w);
-          for (float t=0; t<10; t+=.01) { // ray marching loop
+          for (float t=0; t<50; t+=.01) { // ray marching loop
               float x = player.x + t*cos(angle);
               float y = player.y + t*sin(angle);
 
@@ -137,5 +138,10 @@ void render(FrameBuffer &fb, GameState &gs) { // not a member of GameState struc
             }
         }
       draw_map(fb, sprites, tex_walls, map, cell_w, cell_h);
+    }
+
+    if (gs.player.life <=0){
+      fb.clear(pack_color(0, 0, 0));
+      gs.gameplayMessage = "GAME OVER";
     }
 }

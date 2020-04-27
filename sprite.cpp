@@ -22,7 +22,7 @@ void Sprite::draw_sprite(FrameBuffer &fb,
     while (sprite_dir - player.a >  M_PI) sprite_dir -= 2*M_PI; // remove unncesessary periods from the relative direction
     while (sprite_dir - player.a < -M_PI) sprite_dir += 2*M_PI;
 
-    size_t sprite_screen_size = std::min(2000, static_cast<int>(fb.h/player_dist)); // screen sprite size
+    size_t sprite_screen_size = std::min(4000, static_cast<int>(fb.h/player_dist)); // screen sprite size
     int h_offset = (sprite_dir - player.a)*(fb.w)/(player.fov) + (fb.w/2) - sprite_screen_size/2; // do not forget the 3D view takes only a half of the framebuffer, thus fb.w/2 for the screen width
     int v_offset = fb.h/2 - sprite_screen_size/2;
 

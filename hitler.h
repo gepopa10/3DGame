@@ -15,8 +15,8 @@ struct Hitler : Boss {
     std::vector<std::chrono::duration<double,  std::ratio<1>>> shootAnimationTimes_secs;
     std::vector<std::chrono::duration<double,  std::ratio<1>>> dieAnimationTimes_secs;
 
-    const float proximityAttackThreshold = 8.0; //If the player is closer than proximityAttackThreshold from a monster it starts attacking
-    const float proximityToPlayer = 2.0; //If the player is closer than proximityAttackThreshold from a monster, the monster doesnt go further (to avoid entering in the player)
+    const float proximityAttackThreshold = 4.0; //If the player is closer than proximityAttackThreshold from a monster it starts attacking
+    const float proximityToPlayer = 1.0; //If the player is closer than proximityAttackThreshold from a monster, the monster doesnt go further (to avoid entering in the player)
     const float distanceMonsterAttack = 4.0; //if monster is closer to distanceMonsterAttack it can inflict damage to player
     const float timeAttackMonster = 3; //minimum time before monster can reattack
 

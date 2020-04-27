@@ -12,6 +12,7 @@ struct Boss : MonsterAnimated {
     typedef enum {check, move, shoot, die, stay} Animations; //animation texture in which the animated monster is
     Animations animation = check;
     bool animationFinished = true;
+    bool secondanimation;
     std::chrono::duration<double,  std::ratio<1>> timeDurationCurrentAnime_secs;
     std::chrono::time_point<std::chrono::high_resolution_clock> timeStartedAnime_secs = std::chrono::high_resolution_clock::now();
     std::vector<std::chrono::duration<double,  std::ratio<1>>> checkAnimationTimes_secs;
@@ -19,7 +20,7 @@ struct Boss : MonsterAnimated {
     std::vector<std::chrono::duration<double,  std::ratio<1>>> shootAnimationTimes_secs;
     std::vector<std::chrono::duration<double,  std::ratio<1>>> dieAnimationTimes_secs;
 
-    const float proximityAttackThreshold = 8.0; //If the player is closer than proximityAttackThreshold from a monster it starts attacking
+    const float proximityAttackThreshold = 5.0; //If the player is closer than proximityAttackThreshold from a monster it starts attacking
     const float proximityToPlayer = 2.0; //If the player is closer than proximityAttackThreshold from a monster, the monster doesnt go further (to avoid entering in the player)
     const float distanceMonsterAttack = 4.0; //if monster is closer to distanceMonsterAttack it can inflict damage to player
     const float timeAttackMonster = 3; //minimum time before monster can reattack
@@ -40,7 +41,8 @@ struct Boss : MonsterAnimated {
          float speed_in = 0.5,
          float direction_in = 0,
          bool aimed_in = 0,
-         int life_in = 100);
+         int life_in = 100,
+         bool secondanimation_in = false);
 
     virtual void updatePosition(const Map &map, const Player &player, const double elapsed) override;
     virtual void action(const Map &map, Player &player, const double elapsed) override;

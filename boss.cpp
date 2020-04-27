@@ -8,7 +8,8 @@ Boss::Boss(float x_in,
            float speed_in,
            float direction_in,
            bool aimed_in,
-           int life_in):
+           int life_in,
+           bool secondanimation_in):
            MonsterAnimated(x_in,
                            y_in,
                            texture_in,
@@ -19,14 +20,18 @@ Boss::Boss(float x_in,
                            aimed_in,
                            life_in),
           msgTime_secs(0),
-          msgTimeLimit_secs(5){
+          msgTimeLimit_secs(5),
+          secondanimation(secondanimation_in){
 
   std::chrono::duration<double,  std::ratio<1>> d_check(0.5);
   std::chrono::duration<double,  std::ratio<1>> d_dead(1);
 
   checkAnimationTimes_secs = {d_dead, d_dead*2};
   moveAnimationTimes_secs = {d_check, d_check*2};
-  shootAnimationTimes_secs = {d_check, d_check*2, d_check*3, d_check*4};
+  if (secondanimation_in)
+    shootAnimationTimes_secs = {d_check, d_check*2, d_check*3};
+  else
+    shootAnimationTimes_secs = {d_check, d_check*2, d_check*3, d_check*4};
   dieAnimationTimes_secs = {d_dead, d_dead*2, d_dead*3};
 }
 
@@ -117,15 +122,25 @@ void Boss::animateMonster(){
       break;
     case shoot:
       tex_id = 4;
-      if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[0] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[1])
-        tex_id = 5;
-      else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[1] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[2])
-        tex_id = 6;
-      else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[2] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[3])
-        tex_id = 7;
-      else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[3])
-        {timeStartedAnime_secs = std::chrono::high_resolution_clock::now(); animationFinished = true;}
-      break;
+      if (secondanimation){
+        if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[0] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[1])
+          tex_id = 5;
+        else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[1] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[2])
+          tex_id = 6;
+        else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[2])
+          {timeStartedAnime_secs = std::chrono::high_resolution_clock::now(); animationFinished = true;}
+        break;
+      } else {
+        if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[0] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[1])
+          tex_id = 5;
+        else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[1] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[2])
+          tex_id = 6;
+        else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[2] && timeDurationCurrentAnime_secs < shootAnimationTimes_secs[3])
+          tex_id = 7;
+        else if (timeDurationCurrentAnime_secs > shootAnimationTimes_secs[3])
+          {timeStartedAnime_secs = std::chrono::high_resolution_clock::now(); animationFinished = true;}
+        break;
+      }
     case die:
       tex_id = 8;
       if (timeDurationCurrentAnime_secs > dieAnimationTimes_secs[0] && timeDurationCurrentAnime_secs < dieAnimationTimes_secs[1])
