@@ -9,6 +9,8 @@
 #include "window.h"
 #include "event.h"
 
+//FINAL VERSION PUBLISHED 23 SEPTEMBER 2020
+
 int main() {
 
     FrameBuffer fb{768, 608, std::vector<uint32_t>(768*608, pack_color(255, 255, 255))};
